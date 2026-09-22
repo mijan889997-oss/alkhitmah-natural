@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -219,7 +218,7 @@
         <!-- অর্ডার তালিকা -->
         <div>
           <div class="flex justify-between items-center mb-2">
-            <h4 class="font-bold text-stone-800 text-xs"><i class="fa-solid fa-boxes-packing"></i> অর্ডার তালিকা</h4>
+            <h4 class="font-bold text-stone-800 text-xs"><i class="fa-solid fa-boxes-packing"></i> অর্ডার তালিকা ও ডেলিভারি নিয়ন্ত্রণ</h4>
             <button onclick="fetchAdminOrders()" class="text-xs text-emerald-700 hover:underline"><i class="fa-solid fa-arrows-rotate"></i> রিফ্রেশ</button>
           </div>
           <div class="overflow-x-auto border rounded-lg">
@@ -231,7 +230,7 @@
                   <th class="p-2">ঠিকানা</th>
                   <th class="p-2">আইটেম</th>
                   <th class="p-2">মোট টাকা</th>
-                  <th class="p-2">স্ট্যাটাস</th>
+                  <th class="p-2">অর্ডার স্ট্যাটাস</th>
                 </tr>
               </thead>
               <tbody id="adminOrderTableBody" class="divide-y bg-white">
@@ -564,6 +563,16 @@
       }
     }
 
+    async function updateOrderStatus(orderId, newStatus) {
+      const { error } = await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId);
+      if (error) {
+        alert('স্ট্যাটাস আপডেট ব্যর্থ হয়েছে: ' + error.message);
+      } else {
+        alert(`অর্ডারটি সফলভাবে "${newStatus}" করা হয়েছে!`);
+        fetchAdminOrders();
+      }
+    }
+
     async function fetchAdminOrders() {
       const oBody = document.getElementById('adminOrderTableBody');
       const { data, error } = await supabaseClient.from('orders').select('*').order('created_at', { ascending: false });
@@ -580,7 +589,17 @@
           <td class="p-2 text-[10px]">${Array.isArray(o.items) ? o.items.map(i => `${i.name} (${i.qty})`).join(', ') : ''}</td>
           <td class="p-2 font-bold text-emerald-800">৳ ${o.total_price}</td>
           <td class="p-2">
-            <span class="text-[10px] px-1.5 py-0.5 rounded ${o.status === 'Delivered' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}">${o.status}</span>
+            <select onchange="updateOrderStatus('${o.id}', this.value)" class="text-[10px] p-1 rounded border outline-none font-semibold ${
+              o.status === 'Delivered' ? 'bg-green-100 text-green-800 border-green-300' :
+              o.status === 'Confirmed' ? 'bg-blue-100 text-blue-800 border-blue-300' :
+              o.status === 'Cancelled' ? 'bg-red-100 text-red-800 border-red-300' :
+              'bg-amber-100 text-amber-800 border-amber-300'
+            }">
+              <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>Pending (অপেক্ষমাণ)</option>
+              <option value="Confirmed" ${o.status === 'Confirmed' ? 'selected' : ''}>Confirmed (নিশ্চিত)</option>
+              <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered (ডেলিভার্ড)</option>
+              <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled (বাতিল)</option>
+            </select>
           </td>
         </tr>
       `).join('');
@@ -590,4 +609,4 @@
     updateCartUI();
   </script>
 </body>
-</html>
+  </html>
