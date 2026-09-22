@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>আল খিতমাহ ন্যাচারাল কোম্পানি | Al Khitmah Natural</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+  <!-- টপ নোটিশ বার -->
+  <div class="bg-emerald-900 text-emerald-100 text-xs py-2 px-4 flex justify-between items-center">
+    <span>🌿 ১০০% খাঁটি, প্রাকৃতিক ও অর্গানিক পণ্যের বিশ্বস্ত প্রতিষ্ঠান</span>
+    <div class="flex items-center gap-3">
+      <!-- কারেন্সি কনভার্টার -->
+      <select id="currencySelector" onchange="changeCurrency(this.value)" class="bg-emerald-800 text-white text-xs px-2 py-1 rounded border border-emerald-700 outline-none">
+        <option value="BDT">৳ BDT</option>
+        <option value="USD">$ USD</option>
+        <option value="SAR">﷼ SAR</option>
+      </select>
+      <button onclick="toggleAdminModal()" class="text-emerald-300 hover:text-white underline ml-2"><i class="fa-solid fa-lock"></i> অ্যাডমিন</button>
+    </div>
+  </div>
+
+  <!-- হেডার ও ন্যাভবার -->
+  <header class="bg-white shadow-sm sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <div class="w-10 h-10 bg-emerald-700 rounded-full flex items-center justify-center text-white text-xl">🌿</div>
+        <div>
+          <h1 class="font-bold text-lg text-emerald-950">আল খিতমাহ ন্যাচারাল</h1>
+          <p class="text-xs text-stone-500">Al Khitmah Natural Company</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <!-- কার্ট বাটন -->
+        <button onclick="toggleCartDrawer()" class="relative bg-emerald-50 text-emerald-800 p-2.5 rounded-full hover:bg-emerald-100 transition">
+          <i class="fa-solid fa-bag-shopping text-lg"></i>
+          <span id="cartCountBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- হিরো ব্যানার -->
+  <section class="bg-gradient-to-r from-emerald-900 to-emerald-800 text-white py-12 px-4 text-center">
+    <div class="max-w-3xl mx-auto">
+      <span class="bg-emerald-700/60 text-emerald-200 text-xs px-3 py-1 rounded-full uppercase tracking-wider">প্রকৃতির খাঁটি ছোঁয়া</span>
+      <h2 class="text-3xl md:text-4xl font-extrabold mt-3 leading-snug">স্বাস্থ্যকর জীবনের জন্য খাঁটি ও প্রাকৃতিক ওষুধ ও পণ্য</h2>
+      <p class="mt-3 text-emerald-100 text-sm md:text-base">সরাসরি প্রকৃতির কোল থেকে সংগৃহীত নির্ভেজাল মধু, খাঁটি তেল, পাহাড়ি ঔষধি উপাদান ও ভেষজ পণ্য পৌঁছে দিচ্ছি বিশ্বজুড়ে।</p>
+    </div>
+  </section>
+
+  <!-- প্রডাক্ট সেকশন -->
+  <main class="max-w-6xl mx-auto px-4 py-10">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl font-bold text-stone-800 border-l-4 border-emerald-600 pl-3">আমাদের পণ্যসমূহ</h3>
+      <button onclick="fetchProducts()" class="text-xs text-emerald-700 hover:underline flex items-center gap-1"><i class="fa-solid fa-arrows-rotate"></i> রিফ্রেশ</button>
+    </div>
+
+    <!-- লোডিং স্টেট -->
+    <div id="loadingProducts" class="text-center py-10 text-stone-500 text-sm">
+      <i class="fa-solid fa-spinner fa-spin text-2xl text-emerald-700 mb-2"></i><br/>পণ্য লোড হচ্ছে...
+    </div>
+
+    <!-- প্রডাক্ট গ্রিড -->
+    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 hidden">
+      <!-- ডাটাবেজ থেকে লোড হবে -->
+    </div>
+  </main>
+
+  <!-- কার্ট ড্রয়ার -->
+  <div id="cartDrawer" class="fixed inset-y-0 right-0 max-w-full w-full sm:w-96 bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="p-4 bg-emerald-800 text-white flex justify-between items-center">
+      <h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-cart-shopping"></i> শপিং কার্ট</h3>
+      <button onclick="toggleCartDrawer()" class="text-emerald-200 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div id="cartItemList" class="flex-1 overflow-y-auto p-4 space-y-4">
+      <!-- কার্টের আইটেম এখানে থাকবে -->
+    </div>
+
+    <div class="p-4 border-t bg-stone-50 space-y-3">
+      <div class="flex justify-between text-base font-bold">
+        <span>সর্বমোট:</span>
+        <span id="cartTotalPrice" class="text-emerald-800">৳ ০</span>
+      </div>
+      <button onclick="openCheckoutModal()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-3 rounded-lg font-bold transition flex items-center justify-center gap-2">
+        <i class="fa-solid fa-circle-check"></i> অর্ডার সম্পন্ন করুন
+      </button>
+    </div>
+  </div>
+
+  <!-- চেকআউট ফর্ম মডাল -->
+  <div id="checkoutModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white max-w-md w-full rounded-2xl p-6 relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-700 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      <h3 class="text-xl font-bold text-emerald-950 mb-1">অর্ডার কনফার্ম করুন</h3>
+      <p class="text-xs text-stone-500 mb-4">আপনার সঠিক ঠিকানা দিন, আমাদের প্রতিনিধি যোগাযোগ করবেন।</p>
+      
+      <form id="orderForm" onsubmit="handlePlaceOrder(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-stone-600 mb-1">আপনার নাম *</label>
+          <input type="text" id="custName" required placeholder="উদাঃ মোঃ আব্দুল্লাহ" class="w-full border rounded-lg p-2.5 text-sm outline-emerald-600" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-stone-600 mb-1">মোবাইল নম্বর *</label>
+          <input type="tel" id="custPhone" required placeholder="উদাঃ 01XXXXXXXXX" class="w-full border rounded-lg p-2.5 text-sm outline-emerald-600" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-stone-600 mb-1">সম্পূর্ণ ঠিকানা ও জেলা *</label>
+          <textarea id="custAddress" required rows="2" placeholder="বাড়ি নং, রাস্তা, এলাকা, থানা, জেলা" class="w-full border rounded-lg p-2.5 text-sm outline-emerald-600"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-stone-600 mb-1">পেমেন্ট মেথড</label>
+          <select id="paymentMethod" class="w-full border rounded-lg p-2.5 text-sm outline-emerald-600">
+            <option value="Cash on Delivery">ক্যাশ অন ডেলিভারি (পণ্য হাতে পেয়ে টাকা)</option>
+            <option value="bKash / Nagad">বিকাশ / নগদ (অগ্রিম)</option>
+            <option value="International / Card">ইন্টারন্যাশনাল কার্ড / প্রবাসী পেমেন্ট</option>
+          </select>
+        </div>
+        
+        <!-- ক্লাউড ডাটাবেজ অর্ডার সাবমিট -->
+        <button type="submit" id="submitOrderBtn" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-lg mt-2 transition flex items-center justify-center gap-2">
+          <span>অর্ডার সাবমিট করুন (ক্লাউড ডাটাবেজ)</span>
+        </button>
+
+        <!-- সরাসরি হোয়াটসঅ্যাপ অর্ডার বাটন -->
+        <button type="button" onclick="sendWhatsAppOrder()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 transition">
+          <i class="fa-brands fa-whatsapp text-lg"></i> WhatsApp-এ সরাসরি অর্ডার পাঠান
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- অ্যাডমিন প্যানেল মডাল -->
+  <div id="adminModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white max-w-4xl w-full rounded-2xl p-6 relative max-h-[90vh] overflow-y-auto">
+      <button onclick="toggleAdminModal()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-700 text-lg"><i class="fa-solid fa-xmark"></i></button>
+
+      <!-- অ্যাডমিন লগইন ফর্ম -->
+      <div id="adminLoginForm" class="max-w-sm mx-auto py-8 text-center">
+        <div class="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center mx-auto text-xl mb-3"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3 class="text-xl font-bold text-stone-800 mb-1">অ্যাডমিন প্রবেশ</h3>
+        <p class="text-xs text-stone-500 mb-4">পাসওয়ার্ড দিয়ে প্রবেশ করুন</p>
+        <input type="password" id="adminPassInput" placeholder="পাসওয়ার্ড লিখুন" class="w-full border rounded-lg p-2.5 text-sm mb-3 outline-emerald-600 text-center" />
+        <button onclick="checkAdminPassword()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-2.5 rounded-lg font-bold">লগইন করুন</button>
+      </div>
+
+      <!-- অ্যাডমিন ড্যাশবোর্ড কন্টেন্ট -->
+      <div id="adminDashboard" class="hidden space-y-8">
+        <div class="flex justify-between items-center border-b pb-3">
+          <div>
+            <h3 class="text-xl font-bold text-emerald-950">অ্যাডমিন ড্যাশবোর্ড (Supabase Live)</h3>
+            <p class="text-xs text-stone-500">আল খিতমাহ ন্যাচারাল সেন্ট্রাল ক্লাউড</p>
+          </div>
+          <button onclick="logoutAdmin()" class="text-red-500 hover:text-red-700 text-sm font-semibold">লগআউট</button>
+        </div>
+
+        <!-- নতুন পণ্য যোগ ফর্ম (সরাসরি ছবি আপলোড সুবিধা সহ) -->
+        <div class="bg-emerald-50/60 p-4 rounded-xl border border-emerald-100">
+          <h4 class="font-bold text-emerald-900 text-sm mb-3"><i class="fa-solid fa-plus-circle"></i> নতুন পণ্য / ওষুধ যোগ করুন</h4>
+          <form onsubmit="handleAddNewProduct(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 mb-1">পণ্যের নাম *</label>
+              <input type="text" id="newProdName" required placeholder="উদাঃ খাঁটি কালোজিরা মধু" class="w-full border p-2 rounded text-sm bg-white outline-emerald-600" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 mb-1">মূল্য (BDT) *</label>
+              <input type="number" id="newProdPrice" required placeholder="উদাঃ 850" class="w-full border p-2 rounded text-sm bg-white outline-emerald-600" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 mb-1">গ্যালারি থেকে ছবি সিলেক্ট করুন *</label>
+              <input type="file" id="newProdFileInput" accept="image/*" required onchange="previewUploadedImage(event)" class="w-full border p-1.5 rounded text-xs bg-white outline-emerald-600 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-emerald-700 file:text-white" />
+            </div>
+            <div class="sm:col-span-2 md:col-span-2">
+              <label class="block text-xs font-semibold text-stone-600 mb-1">উপকারিতা / বিস্তারিত বিবরণ *</label>
+              <input type="text" id="newProdDesc" required placeholder="উদাঃ রোগ প্রতিরোধ ক্ষমতা বাড়ায়, হজমে সহায়তা করে..." class="w-full border p-2 rounded text-sm bg-white outline-emerald-600" />
+            </div>
+            <div class="flex items-center gap-3">
+              <div id="imagePreviewContainer" class="w-12 h-12 border rounded bg-stone-100 flex items-center justify-center text-xs text-stone-400 overflow-hidden">
+                ছবি
+              </div>
+              <button type="submit" id="saveProdBtn" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white py-2.5 rounded font-bold text-sm transition">
+                + ডাটাবেজে সেভ করুন
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- পণ্যের দাম বাড়ানো-কমানো ম্যানেজমেন্ট -->
+        <div>
+          <div class="flex justify-between items-center mb-3">
+            <h4 class="font-bold text-stone-800 text-sm"><i class="fa-solid fa-tags"></i> পণ্যের দাম ও স্টক নিয়ন্ত্রণ</h4>
+            <button onclick="fetchAdminProducts()" class="text-xs text-emerald-700 hover:underline"><i class="fa-solid fa-arrows-rotate"></i> রিফ্রেশ পণ্য</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border">
+              <thead class="bg-stone-100 border-b">
+                <tr>
+                  <th class="p-2">ছবি ও নাম</th>
+                  <th class="p-2">বর্তমান দাম (BDT)</th>
+                  <th class="p-2">নতুন দাম আপডেট</th>
+                  <th class="p-2">অ্যাকশন</th>
+                </tr>
+              </thead>
+              <tbody id="adminProductTableBody" class="divide-y">
+                <!-- অ্যাডমিন প্রডাক্ট লোড হবে -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- আসা অর্ডারসমূহের তালিকা -->
+        <div>
+          <div class="flex justify-between items-center mb-3">
+            <h4 class="font-bold text-stone-800 text-sm"><i class="fa-solid fa-boxes-packing"></i> গ্রাহকদের ক্লাউড অর্ডার তালিকা</h4>
+            <button onclick="fetchAdminOrders()" class="text-xs text-emerald-700 hover:underline"><i class="fa-solid fa-arrows-rotate"></i> রিফ্রেশ অর্ডার</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border">
+              <thead class="bg-stone-100 border-b">
+                <tr>
+                  <th class="p-2">অর্ডার আইডি ও তারিখ</th>
+                  <th class="p-2">গ্রাহকের নাম ও ফোন</th>
+                  <th class="p-2">ঠিকানা ও পেমেন্ট</th>
+                  <th class="p-2">আইটেমসমূহ</th>
+                  <th class="p-2">মোট টাকা</th>
+                  <th class="p-2">স্ট্যাটাস পরিবর্তন</th>
+                </tr>
+              </thead>
+              <tbody id="adminOrderTableBody" class="divide-y">
+                <!-- অর্ডার তালিকা লোড হবে -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Supabase কনফিগারেশন
+    const SUPABASE_URL = "https://jemqtfgavqwcxmcunftf.supabase.co";
+    const SUPABASE_ANON_KEY = "Sb_publishable_7hO5OrYLPa0YEJqixsYDcQ_048e9e9P";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // সিক্রেট ও বিজনেস তথ্য
+    const ADMIN_PASSWORD = "0194311";
+    const OFFICIAL_WHATSAPP = "8801943119269";
+
+    let products = [];
+    let cart = JSON.parse(localStorage.getItem('al_khitmah_cart')) || [];
+    let currentCurrency = 'BDT';
+    let uploadedImageBase64 = "";
+
+    const exchangeRates = { BDT: 1, USD: 0.0085, SAR: 0.032 };
+    const currencySymbols = { BDT: '৳ ', USD: '$ ', SAR: '﷼ ' };
+
+    function saveCart() { localStorage.setItem('al_khitmah_cart', JSON.stringify(cart)); }
+
+    function formatPrice(amountInBDT) {
+      const rate = exchangeRates[currentCurrency] || 1;
+      const converted = (amountInBDT * rate).toFixed(currentCurrency === 'BDT' ? 0 : 2);
+      return currencySymbols[currentCurrency] + converted;
+    }
+
+    // ক্লাউড থেকে প্রডাক্ট লোড
+    async function fetchProducts() {
+      try {
+        document.getElementById('loadingProducts').classList.remove('hidden');
+        document.getElementById('productGrid').classList.add('hidden');
+
+        const { data, error } = await supabaseClient
+          .from('products')
+          .select('*')
+          .order('id', { ascending: false });
+
+        if (error) throw error;
+
+        products = data || [];
+        renderProducts();
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        document.getElementById('loadingProducts').innerHTML = `<p class="text-red-500">পণ্য লোড করতে সমস্যা হয়েছে। দয়া করে রিফ্রেশ করুন।</p>`;
+      } finally {
+        document.getElementById('loadingProducts').classList.add('hidden');
+        document.getElementById('productGrid').classList.remove('hidden');
+      }
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('productGrid');
+      if (products.length === 0) {
+        grid.innerHTML = `<p class="col-span-4 text-center text-stone-400 py-10">কোনো পণ্য পাওয়া যায়নি। অ্যাডমিন প্যানেল থেকে পণ্য যোগ করুন।</p>`;
+        return;
+      }
+
+      grid.innerHTML = products.map(prod => `
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition border border-stone-100 flex flex-col justify-between">
+          <img src="${prod.image}" alt="${prod.name}" class="w-full h-44 object-cover" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'" />
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <h4 class="font-bold text-stone-800 text-base">${prod.name}</h4>
+              <p class="text-xs text-stone-500 mt-1 line-clamp-2">${prod.description || ''}</p>
+            </div>
+            <div class="mt-4 flex items-center justify-between">
+              <span class="text-base font-extrabold text-emerald-800">${formatPrice(prod.price)}</span>
+              <button onclick="addToCart(${prod.id})" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs px-3 py-2 rounded-lg font-semibold transition">
+                + কার্টে নিন
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function addToCart(productId) {
+      const item = products.find(p => p.id === productId);
+      if (!item) return;
+      const exist = cart.find(c => c.id === productId);
+      if (exist) {
+        exist.qty += 1;
+      } else {
+        cart.push({ id: item.id, name: item.name, price: item.price, image: item.image, qty: 1 });
+      }
+      saveCart();
+      updateCartUI();
+      toggleCartDrawer();
+    }
+
+    function updateCartUI() {
+      const count = cart.reduce((acc, item) => acc + item.qty, 0);
+      document.getElementById('cartCountBadge').innerText = count;
+
+      const list = document.getElementById('cartItemList');
+      if (cart.length === 0) {
+        list.innerHTML = `<p class="text-xs text-center text-stone-400 py-10">আপনার কার্ট খালি রয়েছে।</p>`;
+        document.getElementById('cartTotalPrice').innerText = formatPrice(0);
+        return;
+      }
+
+      let total = 0;
+      list.innerHTML = cart.map(item => {
+        total += item.price * item.qty;
+        return `
+          <div class="flex items-center justify-between bg-stone-50 p-2.5 rounded-lg border text-xs">
+            <div class="flex items-center gap-2">
+              <img src="${item.image}" class="w-10 h-10 rounded object-cover" />
+              <div>
+                <p class="font-bold text-stone-800">${item.name}</p>
+                <p class="text-emerald-700">${formatPrice(item.price)} × ${item.qty}</p>
+              </div>
+            </div>
+            <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('cartTotalPrice').innerText = formatPrice(total);
+    }
+
+    function removeFromCart(id) {
+      cart = cart.filter(item => item.id !== id);
+      saveCart();
+      updateCartUI();
+    }
+
+    function toggleCartDrawer() {
+      const drawer = document.getElementById('cartDrawer');
+      drawer.classList.toggle('translate-x-full');
+    }
+
+    function changeCurrency(val) {
+      currentCurrency = val;
+      renderProducts();
+      updateCartUI();
+    }
+
+    function openCheckoutModal() {
+      if (cart.length === 0) return alert('দয়া করে কার্টে অন্তত একটি পণ্য যোগ করুন!');
+      const drawer = document.getElementById('cartDrawer');
+      if (!drawer.classList.contains('translate-x-full')) drawer.classList.add('translate-x-full');
+      document.getElementById('checkoutModal').classList.remove('hidden');
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById('checkoutModal').classList.add('hidden');
+    }
+
+    // ক্লাউড ডাটাবেজে সরাসরি অর্ডার পাঠানো
+    async function handlePlaceOrder(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitOrderBtn');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> অর্ডার সেভ হচ্ছে...`;
+
+      const orderId = 'AK-' + Math.floor(100000 + Math.random() * 900000);
+      const newOrder = {
+        id: orderId,
+        customer_name: document.getElementById('custName').value.trim(),
+        phone: document.getElementById('custPhone').value.trim(),
+        address: document.getElementById('custAddress').value.trim(),
+        payment_method: document.getElementById('paymentMethod').value,
+        items: cart,
+        total_price: cart.reduce((acc, i) => acc + (i.price * i.qty), 0),
+        status: 'Pending'
+      };
+
+      try {
+        const { error } = await supabaseClient.from('orders').insert([newOrder]);
+        if (error) throw error;
+
+        cart = [];
+        saveCart();
+        updateCartUI();
+        closeCheckoutModal();
+        e.target.reset();
+        alert(`আলহামদুলিল্লাহ! আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে।\nঅর্ডার আইডি: ${orderId}`);
+      } catch (err) {
+        console.error('Order Error:', err);
+        alert('অর্ডার সেভ করতে সমস্যা হয়েছে। দয়া করে WhatsApp বাটনে ক্লিক করে সরাসরি অর্ডার পাঠান।');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `অর্ডার সাবমিট করুন (ক্লাউড ডাটাবেজ)`;
+      }
+    }
+
+    // হোয়াটসঅ্যাপে অর্ডার পাঠানো এবং ব্যাকগ্রাউন্ডে ক্লাউডেও সেভ করা
+    async function sendWhatsAppOrder() {
+      const name = document.getElementById('custName').value.trim();
+      const phone = document.getElementById('custPhone').value.trim();
+      const address = document.getElementById('custAddress').value.trim();
+      const payment = document.getElementById('paymentMethod').value;
+
+      if (!name || !phone || !address) {
+        return alert('দয়া করে আপনার নাম, মোবাইল নম্বর এবং সম্পূর্ণ ঠিকানা লিখুন!');
+      }
+
+      const orderId = 'AK-' + Math.floor(100000 + Math.random() * 900000);
+      const total = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+      const itemsList = cart.map((i, index) => `${index + 1}. ${i.name} - ${i.qty}টি (৳${i.price * i.qty})`).join('%0A');
+
+      // ক্লাউডে সেভ করা (সাইলেন্টলি)
+      supabaseClient.from('orders').insert([{
+        id: orderId,
+        customer_name: name,
+        phone: phone,
+        address: address,
+        payment_method: payment + ' (WhatsApp)',
+        items: cart,
+        total_price: total,
+        status: 'WhatsApp'
+      }]).then();
+
+      const message = `🌿 *আল খিতমাহ ন্যাচারাল - নতুন অর্ডার*%0A` +
+        `🆔 *অর্ডার আইডি:* ${orderId}%0A%0A` +
+        `👤 *গ্রাহকের নাম:* ${encodeURIComponent(name)}%0A` +
+        `📞 *মোবাইল নম্বর:* ${encodeURIComponent(phone)}%0A` +
+        `📍 *ডেলিভারি ঠিকানা:* ${encodeURIComponent(address)}%0A` +
+        `💳 *পেমেন্ট:* ${encodeURIComponent(payment)}%0A%0A` +
+        `📦 *অর্ডারকৃত পণ্যসমূহ:*%0A${itemsList}%0A%0A` +
+        `💰 *সর্বমোট মূল্য:* ৳ ${total}%0A%0A` +
+        `দয়া করে আমার অর্ডারটি কনফার্ম করুন।`;
+
+      cart = [];
+      saveCart();
+      updateCartUI();
+      closeCheckoutModal();
+
+      window.open(`https://wa.me/${OFFICIAL_WHATSAPP}?text=${message}`, '_blank');
+    }
+
+    // অ্যাডমিন ড্যাশবোর্ড লজিক
+    function toggleAdminModal() {
+      document.getElementById('adminModal').classList.toggle('hidden');
+    }
+
+    function checkAdminPassword() {
+      const pass = document.getElementById('adminPassInput').value.trim();
+      if (pass === ADMIN_PASSWORD) {
+        document.getElementById('adminLoginForm').classList.add('hidden');
+        document.getElementById('adminDashboard').classList.remove('hidden');
+        fetchAdminProducts();
+        fetchAdminOrders();
+      } else {
+        alert('ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন।');
+      }
+    }
+
+    function logoutAdmin() {
+      document.getElementById('adminDashboard').classList.add('hidden');
+      document.getElementById('adminLoginForm').classList.remove('hidden');
+      document.getElementById('adminPassInput').value = '';
+      toggleAdminModal();
+    }
+
+    function previewUploadedImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          uploadedImageBase64 = e.target.result;
+          document.getElementById('imagePreviewContainer').innerHTML = `<img src="${uploadedImageBase64}" class="w-full h-full object-cover" />`;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    async function fetchAdminProducts() {
+      const pBody = document.getElementById('adminProductTableBody');
+      pBody.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-stone-400">লোড হচ্ছে...</td></tr>`;
+
+      const { data, error } = await supabaseClient.from('products').select('*').order('id', { ascending: false });
+      if (error || !data) return;
+
+      pBody.innerHTML = data.map(p => `
+        <tr class="hover:bg-stone-50">
+          <td class="p-2 flex items-center gap-2">
+            <img src="${p.image}" class="w-8 h-8 rounded object-cover" />
+            <span class="font-bold">${p.name}</span>
+          </td>
+          <td class="p-2 font-bold text-emerald-800">৳ ${p.price}</td>
+          <td class="p-2">
+            <input type="number" id="priceInput_${p.id}" value="${p.price}" class="w-20 border rounded p-1 text-xs" />
+            <button onclick="updateProductPrice(${p.id})" class="bg-emerald-600 text-white px-2 py-1 rounded text-xs ml-1">আপডেট</button>
+          </td>
+          <td class="p-2">
+            <button onclick="deleteProduct(${p.id})" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function updateProductPrice(id) {
+      const newPrice = Number(document.getElementById(`priceInput_${id}`).value);
+      if (!newPrice || newPrice <= 0) return alert('সঠিক দাম লিখুন');
+
+      const { error } = await supabaseClient.from('products').update({ price: newPrice }).eq('id', id);
+      if (error) {
+        alert('দাম আপডেট করতে ব্যর্থ হয়েছে।');
+      } else {
+        alert('সফলভাবে দাম আপডেট হয়েছে!');
+        fetchProducts();
+        fetchAdminProducts();
+      }
+    }
+
+    async function deleteProduct(id) {
+      if (!confirm('আপনি কি নিশ্চিত এই পণ্যটি মুছে ফেলতে চান?')) return;
+      const { error } = await supabaseClient.from('products').delete().eq('id', id);
+      if (error) {
+        alert('মুছতে ব্যর্থ হয়েছে।');
+      } else {
+        fetchProducts();
+        fetchAdminProducts();
+      }
+    }
+
+    async function handleAddNewProduct(e) {
+      e.preventDefault();
+      if (!uploadedImageBase64) return alert('দয়া করে একটি ছবি সিলেক্ট করুন!');
+
+      const btn = document.getElementById('saveProdBtn');
+      btn.disabled = true;
+      btn.innerText = 'সেভ হচ্ছে...';
+
+      const newProduct = {
+        name: document.getElementById('newProdName').value.trim(),
+        price: Number(document.getElementById('newProdPrice').value),
+        image: uploadedImageBase64,
+        description: document.getElementById('newProdDesc').value.trim()
+      };
+
+      const { error } = await supabaseClient.from('products').insert([newProduct]);
+      btn.disabled = false;
+      btn.innerText = '+ ডাটাবেজে সেভ করুন';
+
+      if (error) {
+        alert('পণ্য যোগ করতে সমস্যা হয়েছে।');
+      } else {
+        alert('পণ্য সফলভাবে ডাটাবেজে যোগ হয়েছে!');
+        e.target.reset();
+        uploadedImageBase64 = "";
+        document.getElementById('imagePreviewContainer').innerHTML = "ছবি";
+        fetchProducts();
+        fetchAdminProducts();
+      }
+    }
+
+    async function fetchAdminOrders() {
+      const oBody = document.getElementById('adminOrderTableBody');
+      oBody.innerHTML = `<tr><td colspan="6" class="p-3 text-center text-stone-400">অর্ডার লোড হচ্ছে...</td></tr>`;
+
+      const { data, error } = await supabaseClient.from('orders').select('*').order('created_at', { ascending: false });
+      if (error || !data || data.length === 0) {
+        oBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-stone-400">এখনো কোনো অর্ডার আসেনি।</td></tr>`;
+        return;
+      }
+
+      oBody.innerHTML = data.map(o => `
+        <tr class="hover:bg-stone-50">
+          <td class="p-2 font-mono font-bold">${o.id}<br/><span class="text-[10px] text-stone-400">${new Date(o.created_at).toLocaleString()}</span></td>
+          <td class="p-2 font-semibold">${o.customer_name}<br/><span class="text-stone-500 font-mono">${o.phone}</span></td>
+          <td class="p-2 text-stone-600">${o.address}<br/><span class="text-[10px] bg-stone-100 px-1 rounded">${o.payment_method}</span></td>
+          <td class="p-2">${Array.isArray(o.items) ? o.items.map(i => `${i.name} (${i.qty}টি)`).join(', ') : ''}</td>
+          <td class="p-2 font-bold text-emerald-800">৳ ${o.total_price}</td>
+          <td class="p-2">
+            <select onchange="updateOrderStatus('${o.id}', this.value)" class="text-xs border rounded p-1 ${o.status === 'Delivered' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800'}">
+              <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
+              <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
+              <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+              <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+            </select>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function updateOrderStatus(orderId, newStatus) {
+      const { error } = await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId);
+      if (error) {
+        alert('স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে');
+      } else {
+        alert('অর্ডার স্ট্যাটাস আপডেট হয়েছে!');
+      }
+    }
+
+    // প্রথমবার সাইট ওপেন হলে ডাটাবেজ থেকে প্রডাক্ট আনা
+    fetchProducts();
+    updateCartUI();
+  </script>
+</body>
+</html>
