@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -29,6 +28,19 @@
         <option value="SAR">﷼ SAR</option>
       </select>
       <button onclick="toggleAdminModal()" class="text-emerald-300 hover:text-white underline ml-2"><i class="fa-solid fa-lock"></i> অ্যাডমিন</button>
+    </div>
+  </div>
+
+  <!-- ডাইনামিক অফার ব্যানার (অ্যাডমিন প্যানেল থেকে নিয়ন্ত্রিত) -->
+  <div id="dynamicOfferBar" class="hidden bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white py-2.5 px-4 shadow-sm">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
+      <div class="flex items-center gap-2 text-xs md:text-sm font-semibold">
+        <span class="bg-white/20 px-2 py-0.5 rounded text-[11px] uppercase tracking-wide">বিশেষ অফার</span>
+        <span id="offerBarText">🎁 ২০০০ টাকার পণ্য কিনলেই পাচ্ছেন আকর্ষণীয় কুপন কার্ড! অফারটি পেতে যোগাযোগ করুন।</span>
+      </div>
+      <a id="offerBarLink" href="https://wa.me/8801943119269?text=আমি%20অফারের%20কুপন%20সম্পর্কে%20জানতে%20চাই" target="_blank" class="bg-white text-stone-900 hover:bg-stone-100 font-bold text-xs px-3 py-1 rounded-full shadow transition flex items-center gap-1.5 whitespace-nowrap">
+        <i class="fa-brands fa-whatsapp text-green-600 text-sm"></i> যোগাযোগ করুন
+      </a>
     </div>
   </div>
 
@@ -74,9 +86,7 @@
     </div>
 
     <!-- প্রডাক্ট গ্রিড -->
-    <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 hidden">
-      <!-- ডাটাবেজ থেকে লোড হবে -->
-    </div>
+    <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 hidden"></div>
   </main>
 
   <!-- বড় করে দেখার জন্য প্রোডাক্ট ডিটেইল মডাল -->
@@ -87,24 +97,20 @@
       </button>
 
       <div class="overflow-y-auto p-4 space-y-4">
-        <!-- বড় ছবি -->
         <div class="w-full bg-stone-50 rounded-xl overflow-hidden border flex items-center justify-center p-2">
           <img id="qvImage" src="" alt="" class="max-h-80 w-auto object-contain rounded-lg" />
         </div>
-
         <div>
           <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">১০০% প্রাকৃতিক</span>
           <h3 id="qvName" class="text-xl font-extrabold text-stone-900 mt-2"></h3>
           <p id="qvPrice" class="text-xl font-bold text-emerald-800 mt-1"></p>
         </div>
-
         <div class="border-t pt-3">
           <h4 class="text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1"><i class="fa-solid fa-circle-info text-emerald-600"></i> বিস্তারিত ও উপকারিতা:</h4>
           <div id="qvDescription" class="text-sm text-stone-600 whitespace-pre-line leading-relaxed bg-stone-50 p-3 rounded-xl border border-stone-100"></div>
         </div>
       </div>
 
-      <!-- নিচে অর্ডার ও কার্ট বাটন -->
       <div class="p-3 bg-stone-50 border-t flex gap-2">
         <button id="qvAddCartBtn" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-xl transition text-sm flex items-center justify-center gap-2">
           <i class="fa-solid fa-cart-plus"></i> কার্টে যোগ করুন
@@ -120,9 +126,7 @@
       <button onclick="toggleCartDrawer()" class="text-emerald-200 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
     </div>
     
-    <div id="cartItemList" class="flex-1 overflow-y-auto p-4 space-y-4">
-      <!-- কার্টের আইটেম -->
-    </div>
+    <div id="cartItemList" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
 
     <div class="p-4 border-t bg-stone-50 space-y-3">
       <div class="flex justify-between text-base font-bold">
@@ -199,13 +203,33 @@
           <button onclick="logoutAdmin()" class="text-red-500 hover:text-red-700 text-xs font-semibold">লগআউট</button>
         </div>
 
+        <!-- অফার ব্যানার নিয়ন্ত্রণ সেকশন -->
+        <div class="bg-amber-50 p-4 rounded-xl border border-amber-200">
+          <h4 class="font-bold text-amber-900 text-sm mb-2 flex items-center gap-1.5"><i class="fa-solid fa-bullhorn text-orange-600"></i> ওয়েবসাইটের অফার ব্যানার নিয়ন্ত্রণ</h4>
+          <div class="space-y-2">
+            <div>
+              <label class="block text-xs font-semibold text-stone-700 mb-1">অফার বার্তা / অফার লেখা:</label>
+              <input type="text" id="adminOfferTextInput" placeholder="উদাঃ ২০০০ টাকার পণ্য কিনলেই পাচ্ছেন আকর্ষণীয় কুপন কার্ড!" class="w-full border p-2 rounded text-xs bg-white outline-emerald-600" />
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <label class="flex items-center gap-2 text-xs font-semibold text-stone-700 cursor-pointer">
+                <input type="checkbox" id="adminOfferActiveCheckbox" class="w-4 h-4 text-emerald-600 rounded" />
+                <span>ওয়েবসাইটে অফার ব্যানার চালু রাখুন</span>
+              </label>
+              <button onclick="saveOfferSettings()" id="saveOfferBtn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-4 py-1.5 rounded-lg text-xs transition">
+                অফার সেভ করুন
+              </button>
+            </div>
+          </div>
+        </div>
+
         <!-- নতুন পণ্য যোগ ফর্ম -->
         <div class="bg-emerald-50/60 p-4 rounded-xl border border-emerald-100">
           <h4 class="font-bold text-emerald-900 text-sm mb-3"><i class="fa-solid fa-plus-circle"></i> নতুন পণ্য / ওষুধ যোগ করুন</h4>
           <form onsubmit="handleAddNewProduct(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             <div>
               <label class="block text-xs font-semibold text-stone-600 mb-1">পণ্যের নাম *</label>
-              <input type="text" id="newProdName" required placeholder="উদাঃ সুন্দরবনের মধু" class="w-full border p-2 rounded text-sm bg-white outline-emerald-600" />
+              <input type="text" id="newProdName" required placeholder="উদাঃ এলার্জি বিনাশ" class="w-full border p-2 rounded text-sm bg-white outline-emerald-600" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-stone-600 mb-1">মূল্য (BDT) *</label>
@@ -217,7 +241,7 @@
             </div>
             <div class="sm:col-span-2 md:col-span-2">
               <label class="block text-xs font-semibold text-stone-600 mb-1">উপকারিতা / বিস্তারিত বিবরণ *</label>
-              <textarea id="newProdDesc" required rows="2" placeholder="উপকারিতা এবং খাওয়ার নিয়ম লিখুন..." class="w-full border p-2 rounded text-sm bg-white outline-emerald-600"></textarea>
+              <textarea id="newProdDesc" required rows="2" placeholder="উপকারিতা এবং নিয়ম লিখুন..." class="w-full border p-2 rounded text-sm bg-white outline-emerald-600"></textarea>
             </div>
             <div class="flex items-center gap-2">
               <div id="imagePreviewContainer" class="w-12 h-10 border rounded bg-stone-100 flex items-center justify-center text-[10px] text-stone-400 overflow-hidden">ছবি</div>
@@ -244,9 +268,7 @@
                   <th class="p-2">অ্যাকশন</th>
                 </tr>
               </thead>
-              <tbody id="adminProductTableBody" class="divide-y bg-white">
-                <!-- প্রডাক্ট আসবে -->
-              </tbody>
+              <tbody id="adminProductTableBody" class="divide-y bg-white"></tbody>
             </table>
           </div>
         </div>
@@ -269,9 +291,7 @@
                   <th class="p-2">অর্ডার স্ট্যাটাস</th>
                 </tr>
               </thead>
-              <tbody id="adminOrderTableBody" class="divide-y bg-white">
-                <!-- অর্ডার তালিকা -->
-              </tbody>
+              <tbody id="adminOrderTableBody" class="divide-y bg-white"></tbody>
             </table>
           </div>
         </div>
@@ -304,6 +324,50 @@
       return currencySymbols[currentCurrency] + converted;
     }
 
+    async function loadOfferSettings() {
+      try {
+        const { data, error } = await supabaseClient.from('store_settings').select('*').eq('id', 1).single();
+        if (data) {
+          const offerBar = document.getElementById('dynamicOfferBar');
+          if (data.offer_active) {
+            offerBar.classList.remove('hidden');
+            document.getElementById('offerBarText').innerText = data.offer_text;
+            document.getElementById('offerBarLink').href = `https://wa.me/${OFFICIAL_WHATSAPP}?text=${encodeURIComponent(data.offer_text)}`;
+          } else {
+            offerBar.classList.add('hidden');
+          }
+          const textInput = document.getElementById('adminOfferTextInput');
+          const checkInput = document.getElementById('adminOfferActiveCheckbox');
+          if (textInput) textInput.value = data.offer_text || '';
+          if (checkInput) checkInput.checked = data.offer_active;
+        }
+      } catch (err) {
+        console.log('Offer setting error:', err);
+      }
+    }
+
+    async function saveOfferSettings() {
+      const btn = document.getElementById('saveOfferBtn');
+      btn.innerText = 'সেভ হচ্ছে...';
+      const text = document.getElementById('adminOfferTextInput').value.trim();
+      const active = document.getElementById('adminOfferActiveCheckbox').checked;
+
+      const { error } = await supabaseClient.from('store_settings').upsert({
+        id: 1,
+        offer_text: text,
+        offer_active: active,
+        updated_at: new Date()
+      });
+
+      btn.innerText = 'অফার সেভ করুন';
+      if (error) {
+        alert('অফার সেভ করা যায়নি: ' + error.message);
+      } else {
+        alert('অফার সফলভাবে আপডেট হয়েছে!');
+        loadOfferSettings();
+      }
+    }
+
     function compressAndPreviewImage(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -315,7 +379,7 @@
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-          const maxDim = 600; // ছবি বড় ও পরিষ্কার দেখানোর জন্য রেজোলিউশন বাড়ানো হয়েছে
+          const maxDim = 600;
 
           if (width > height && width > maxDim) {
             height *= maxDim / width;
@@ -368,7 +432,6 @@
 
       grid.innerHTML = products.map(prod => `
         <div class="bg-white rounded-xl overflow-hidden shadow-sm border border-stone-100 flex flex-col justify-between hover:shadow-md transition">
-          <!-- ছবি চাপলে বড় হবে -->
           <div onclick="openQuickView(${prod.id})" class="cursor-pointer bg-stone-50 p-2 flex items-center justify-center relative group">
             <img src="${prod.image}" alt="${prod.name}" class="product-img-card rounded" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'" />
             <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
@@ -392,7 +455,6 @@
       `).join('');
     }
 
-    // ছবি ও বিবরণ বড় করে দেখার ফাংশন
     function openQuickView(id) {
       const prod = products.find(p => p.id === id);
       if (!prod) return;
@@ -400,7 +462,7 @@
       document.getElementById('qvImage').src = prod.image;
       document.getElementById('qvName').innerText = prod.name;
       document.getElementById('qvPrice').innerText = formatPrice(prod.price);
-      document.getElementById('qvDescription').innerText = prod.description || 'কোনো বিবরণ যোগ করা হয়নি।';
+      document.getElementById('qvDescription').innerText = prod.description || 'কোনো বিবরণ দেওয়া হয়নি।';
       
       const addBtn = document.getElementById('qvAddCartBtn');
       addBtn.onclick = function() {
@@ -548,6 +610,7 @@
         document.getElementById('adminDashboard').classList.remove('hidden');
         fetchAdminProducts();
         fetchAdminOrders();
+        loadOfferSettings();
       } else {
         alert('ভুল পাসওয়ার্ড!');
       }
@@ -673,6 +736,7 @@
 
     fetchProducts();
     updateCartUI();
+    loadOfferSettings();
   </script>
 </body>
-              </html>
+          </html>
