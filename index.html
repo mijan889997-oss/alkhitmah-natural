@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -246,7 +247,7 @@
 
   <script>
     const SUPABASE_URL = "https://jemqtfgavqwcxmcunftf.supabase.co";
-    const SUPABASE_ANON_KEY = "Sb_publishable_7hO5OrYLPa0YEJqixsYDcQ_048e9e9P";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplbXF0ZmdhdnF3Y3htY3VuZnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNzA2OTYsImV4cCI6MjEwNTY0NjY5Nn0.Jrmx5HgwJxZjSO1CeoMlnx5RyOczkHtB6r--w_Qmmtw";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const ADMIN_PASSWORD = "0194311";
@@ -268,7 +269,6 @@
       return currencySymbols[currentCurrency] + converted;
     }
 
-    // ছবি স্বয়ংক্রিয়ভাবে ছোট (কমপ্রেস) করার ফাংশন
     function compressAndPreviewImage(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -280,7 +280,7 @@
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-          const maxDim = 400; // ছবি বেশি বড় হবে না, দ্রুত আপলোড হবে
+          const maxDim = 400;
 
           if (width > height && width > maxDim) {
             height *= maxDim / width;
@@ -295,7 +295,6 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
 
-          // হালকা JPG ফরম্যাটে কনভার্ট
           compressedImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
           document.getElementById('imagePreviewContainer').innerHTML = `<img src="${compressedImageBase64}" class="w-full h-full object-cover" />`;
         };
@@ -591,4 +590,4 @@
     updateCartUI();
   </script>
 </body>
-  </html>
+</html>
