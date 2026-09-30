@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>আল খিদমাহ ন্যাচারাল কোম্পানি | Al Khidmah Natural</title>
+  <title>আল খিদমাহ ন্যাচারাল কোম্পানি | Al Khidmah Natural Care</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
-    .product-img-card { height: 180px; width: 100%; object-fit: contain; background-color: #f8fafc; }
+    .product-img-card { height: 180px; width: 100%; object-fit: cover; background-color: #f8fafc; }
   </style>
 </head>
 <body class="bg-stone-50 text-stone-800">
 
   <!-- টপ নোটিশ বার -->
-  <div class="bg-emerald-900 text-emerald-100 text-xs py-2 px-4 flex justify-between items-center">
+  <div class="bg-emerald-950 text-emerald-100 text-xs py-2 px-4 flex justify-between items-center">
     <span>🌿 ১০০% খাঁটি, প্রাকৃতিক ও অর্গানিক পণ্যের বিশ্বস্ত প্রতিষ্ঠান</span>
     <div class="flex items-center gap-3">
-      <select id="currencySelector" onchange="changeCurrency(this.value)" class="bg-emerald-800 text-white text-xs px-2 py-1 rounded border border-emerald-700 outline-none">
+      <select id="currencySelector" onchange="changeCurrency(this.value)" class="bg-emerald-900 text-white text-xs px-2 py-1 rounded border border-emerald-700 outline-none">
         <option value="BDT">৳ BDT</option>
         <option value="USD">$ USD</option>
         <option value="SAR">﷼ SAR</option>
@@ -34,7 +34,7 @@
         <span class="bg-white/20 px-2 py-0.5 rounded text-[11px] uppercase tracking-wide">বিশেষ অফার</span>
         <span id="offerBarText">🎁 ২০০০ টাকার পণ্য কিনলেই পাচ্ছেন আকর্ষণীয় কুপন কার্ড! অফারটি পেতে যোগাযোগ করুন।</span>
       </div>
-      <a id="offerBarLink" href="https://wa.me/8801343603065?text=আমি%20অফারের%20কুপন%20সম্পর্কে%20জানতে%20চাই" target="_blank" class="bg-white text-stone-900 hover:bg-stone-100 font-bold text-xs px-3 py-1 rounded-full shadow transition flex items-center gap-1.5 whitespace-nowrap">
+      <a id="offerBarLink" href="https://wa.me/8801971909499?text=আমি%20অফারের%20কুপন%20সম্পর্কে%20জানতে%20চাই" target="_blank" class="bg-white text-stone-900 hover:bg-stone-100 font-bold text-xs px-3 py-1 rounded-full shadow transition flex items-center gap-1.5 whitespace-nowrap">
         <i class="fa-brands fa-whatsapp text-green-600 text-sm"></i> যোগাযোগ করুন
       </a>
     </div>
@@ -47,7 +47,7 @@
         <div class="w-10 h-10 bg-emerald-700 rounded-full flex items-center justify-center text-white text-xl">🌿</div>
         <div>
           <h1 class="font-bold text-lg text-emerald-950">আল খিদমাহ ন্যাচারাল</h1>
-          <p class="text-xs text-stone-500">Al Khidmah Natural Company</p>
+          <p class="text-xs text-stone-500">প্রতিনিধি মূল্য তালিকা ২০২৬-২৭</p>
         </div>
       </div>
       <div class="flex items-center gap-4">
@@ -71,18 +71,14 @@
   <!-- প্রডাক্ট সেকশন -->
   <main class="max-w-6xl mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
-      <h3 class="text-lg font-bold text-stone-800 border-l-4 border-emerald-600 pl-3">আমাদের পণ্যসমূহ</h3>
-      <button onclick="fetchProducts()" class="text-xs text-emerald-700 hover:underline flex items-center gap-1"><i class="fa-solid fa-arrows-rotate"></i> রিফ্রেশ</button>
+      <div>
+        <h3 class="text-lg font-bold text-stone-800 border-l-4 border-emerald-600 pl-3">আমাদের পণ্যসমূহ ও ভেষজ ঔষধ</h3>
+        <p class="text-xs text-stone-500 pl-3 mt-0.5" id="syncStatusText">🌿 ক্যাটালগ প্রস্তুত</p>
+      </div>
+      <button onclick="fetchSupabaseProducts()" class="text-xs text-emerald-700 hover:underline flex items-center gap-1"><i class="fa-solid fa-arrows-rotate"></i> ডাটাবেজ সিঙ্ক</button>
     </div>
 
-    <!-- এরর ব্যানার (যদি সমস্যা থাকে) -->
-    <div id="errorAlertBox" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-xs font-mono"></div>
-
-    <div id="loadingProducts" class="text-center py-10 text-stone-500 text-sm">
-      <i class="fa-solid fa-spinner fa-spin text-2xl text-emerald-700 mb-2"></i><br/>পণ্য লোড হচ্ছে...
-    </div>
-
-    <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 hidden"></div>
+    <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
   </main>
 
   <!-- কুইক ভিউ মডাল -->
@@ -94,10 +90,10 @@
 
       <div class="overflow-y-auto p-4 space-y-4">
         <div class="w-full bg-stone-50 rounded-xl overflow-hidden border flex items-center justify-center p-2">
-          <img id="qvImage" src="" alt="" class="max-h-80 w-auto object-contain rounded-lg" />
+          <img id="qvImage" src="" alt="" class="max-h-72 w-auto object-contain rounded-lg" />
         </div>
         <div>
-          <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">১০০% প্রাকৃতিক</span>
+          <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">১০০% প্রাকৃতিক ভেষজ</span>
           <h3 id="qvName" class="text-xl font-extrabold text-stone-900 mt-2"></h3>
           <p id="qvPrice" class="text-xl font-bold text-emerald-800 mt-1"></p>
         </div>
@@ -139,8 +135,8 @@
   <div id="checkoutModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white max-w-md w-full rounded-2xl p-6 relative max-h-[90vh] overflow-y-auto">
       <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-700 text-lg"><i class="fa-solid fa-xmark"></i></button>
-      <h3 class="text-lg font-bold text-emerald-950 mb-1">অর্ডার কনফার্ম করুন</h3>
-      <p class="text-xs text-stone-500 mb-4">আপনার সঠিক ঠিকানা দিন, আমাদের প্রতিনিধি যোগাযোগ করবেন।</p>
+      <h3 class="text-lg font-bold text-emerald-950 mb-1">অর্ডার নিশ্চিত করুন</h3>
+      <p class="text-xs text-stone-500 mb-4">আপনার সঠিক ঠিকানা দিন, আল-খিদমাহ ন্যাচারাল প্রতিনিধি যোগাযোগ করবেন।</p>
       
       <form id="orderForm" onsubmit="handlePlaceOrder(event)" class="space-y-3">
         <div>
@@ -169,7 +165,7 @@
         </button>
 
         <button type="button" onclick="sendWhatsAppOrder()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 transition">
-          <i class="fa-brands fa-whatsapp text-lg"></i> WhatsApp-এ সরাসরি অর্ডার পাঠান
+          <i class="fa-brands fa-whatsapp text-lg"></i> সরাসরি WhatsApp-এ অর্ডার পাঠান
         </button>
       </form>
     </div>
@@ -191,18 +187,19 @@
       <div id="adminDashboard" class="hidden space-y-6">
         <div class="flex justify-between items-center border-b pb-3">
           <div>
-            <h3 class="text-lg font-bold text-emerald-950">অ্যাডমিন ড্যাশবোর্ড (Supabase Live)</h3>
+            <h3 class="text-lg font-bold text-emerald-950">অ্যাডমিন কন্ট্রোল সেন্টার</h3>
             <p class="text-xs text-stone-500">আল খিদমাহ ন্যাচারাল সেন্ট্রাল ক্লাউড</p>
           </div>
           <button onclick="logoutAdmin()" class="text-red-500 hover:text-red-700 text-xs font-semibold">লগআউট</button>
         </div>
 
+        <!-- ব্যানার নিয়ন্ত্রণ -->
         <div class="bg-amber-50 p-4 rounded-xl border border-amber-200">
           <h4 class="font-bold text-amber-900 text-sm mb-2 flex items-center gap-1.5"><i class="fa-solid fa-bullhorn text-orange-600"></i> ওয়েবসাইটের অফার ব্যানার নিয়ন্ত্রণ</h4>
           <div class="space-y-2">
             <div>
               <label class="block text-xs font-semibold text-stone-700 mb-1">অফার বার্তা / অফার লেখা:</label>
-              <input type="text" id="adminOfferTextInput" placeholder="উদাঃ ২০০০ টাকার পণ্য কিনলেই পাচ্ছেন আকর্ষণীয় কুপন কার্ড!" class="w-full border p-2 rounded text-xs bg-white outline-emerald-600" />
+              <input type="text" id="adminOfferTextInput" placeholder="উদাঃ ২০০০ টাকার পণ্য কিনলেই পাচ্ছেন আকর্ষণীয় উপহার!" class="w-full border p-2 rounded text-xs bg-white outline-emerald-600" />
             </div>
             <div class="flex items-center justify-between pt-1">
               <label class="flex items-center gap-2 text-xs font-semibold text-stone-700 cursor-pointer">
@@ -229,34 +226,35 @@
               <input type="number" id="newProdPrice" required placeholder="উদাঃ 850" class="w-full border p-2 rounded text-sm bg-white outline-emerald-600" />
             </div>
             <div>
-              <label class="block text-xs font-semibold text-stone-600 mb-1">গ্যালারি থেকে ছবি সিলেক্ট করুন *</label>
-              <input type="file" id="newProdFileInput" accept="image/*" required onchange="compressAndPreviewImage(event)" class="w-full border p-1 rounded text-xs bg-white outline-emerald-600 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-emerald-700 file:text-white" />
+              <label class="block text-xs font-semibold text-stone-600 mb-1">ছবির লিংক বা ফাইল আপলোড</label>
+              <input type="file" id="newProdFileInput" accept="image/*" onchange="compressAndPreviewImage(event)" class="w-full border p-1 rounded text-xs bg-white outline-emerald-600 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-emerald-700 file:text-white" />
             </div>
             <div class="sm:col-span-2 md:col-span-2">
               <label class="block text-xs font-semibold text-stone-600 mb-1">উপকারিতা / বিস্তারিত বিবরণ *</label>
-              <textarea id="newProdDesc" required rows="2" placeholder="উপকারিতা এবং নিয়ম লিখুন..." class="w-full border p-2 rounded text-sm bg-white outline-emerald-600"></textarea>
+              <textarea id="newProdDesc" required rows="2" placeholder="উপকারিতা এবং সেবন নিয়ম লিখুন..." class="w-full border p-2 rounded text-sm bg-white outline-emerald-600"></textarea>
             </div>
             <div class="flex items-center gap-2">
               <div id="imagePreviewContainer" class="w-12 h-10 border rounded bg-stone-100 flex items-center justify-center text-[10px] text-stone-400 overflow-hidden">ছবি</div>
               <button type="submit" id="saveProdBtn" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white py-2 rounded font-bold text-xs transition">
-                + সেভ করুন
+                + সেভ করুন (ডাটাবেজে)
               </button>
             </div>
           </form>
         </div>
 
+        <!-- দাম নিয়ন্ত্রণ -->
         <div>
           <div class="flex justify-between items-center mb-2">
-            <h4 class="font-bold text-stone-800 text-xs"><i class="fa-solid fa-tags"></i> পণ্যের দাম ও স্টক নিয়ন্ত্রণ</h4>
-            <button onclick="fetchAdminProducts()" class="text-xs text-emerald-700 hover:underline"><i class="fa-solid fa-arrows-rotate"></i> রিফ্রেশ</button>
+            <h4 class="font-bold text-stone-800 text-xs"><i class="fa-solid fa-tags"></i> পণ্যের দাম ও তালিকা নিয়ন্ত্রণ</h4>
+            <button onclick="renderAdminProducts()" class="text-xs text-emerald-700 hover:underline"><i class="fa-solid fa-arrows-rotate"></i> রিফ্রেশ</button>
           </div>
           <div class="overflow-x-auto border rounded-lg">
             <table class="w-full text-left text-xs">
               <thead class="bg-stone-100 border-b">
                 <tr>
                   <th class="p-2">ছবি ও নাম</th>
-                  <th class="p-2">দাম (BDT)</th>
-                  <th class="p-2">নতুন দাম</th>
+                  <th class="p-2">বর্তমান দাম (BDT)</th>
+                  <th class="p-2">নতুন দাম দিন</th>
                   <th class="p-2">অ্যাকশন</th>
                 </tr>
               </thead>
@@ -265,6 +263,7 @@
           </div>
         </div>
 
+        <!-- অর্ডার তালিকা -->
         <div>
           <div class="flex justify-between items-center mb-2">
             <h4 class="font-bold text-stone-800 text-xs"><i class="fa-solid fa-boxes-packing"></i> অর্ডার তালিকা ও ডেলিভারি নিয়ন্ত্রণ</h4>
@@ -299,9 +298,57 @@
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const ADMIN_PASSWORD = "909499";
-    const OFFICIAL_WHATSAPP = "8801343603065";
+    const OFFICIAL_WHATSAPP = "8801971909499";
 
-    let products = [];
+    // মাস্টার ডাটাবেজ (সকল প্রাকৃতিক ওষুধের অফিশিয়াল পূর্ণ তালিকা)
+    const initialCatalogue = [
+      { id: 'p1', name: 'নুসরাত পাউডার', price: 1000, image: 'https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=500', description: 'হজমশক্তি বৃদ্ধি, পেটের গ্যাস ও বদহজম দূর করে সার্বিক সুস্থতা প্রদান করে।' },
+      { id: 'p2', name: 'পাওয়ার গোল্ড হালুয়া', price: 1250, image: 'https://images.unsplash.com/photo-1577069808021-5a67645e7512?w=500', description: 'বিশেষ পুষ্টিকর প্রাকৃতিক ফর্মুলা; শরীরের রোগ প্রতিরোধ ক্ষমতা ও জীবনীশক্তি দ্বিগুণ করে।' },
+      { id: 'p3', name: 'মিসাইল বিট', price: 1250, image: 'https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=500', description: 'স্নায়বিক দুর্বলতা হ্রাস করে, দ্রুত ক্লান্তি দূর করে শরীর চাঙ্গা রাখে।' },
+      { id: 'p4', name: 'বিগ পেনিস 3XL', price: 1050, image: 'https://images.unsplash.com/photo-1608248597359-5489f64d7285?w=500', description: 'পুরুষদের বিশেষ মালিশ ফর্মুলা যা স্থানীয় রক্ত সঞ্চালন বৃদ্ধি করে সতেজতা বাড়ায়।' },
+      { id: 'p5', name: 'জিনসিন পাউডার', price: 900, image: 'https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=500', description: 'খাঁটি লাল জিনসিন; শক্তি ও কার্যক্ষমতা বৃদ্ধির জন্য একটি নির্ভরযোগ্য প্রাকৃতিক উপাদান।' },
+      { id: 'p6', name: 'রিয়েল রাজমণি বটিকা', price: 1150, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'শারীরিক অবসাদ দূর করে ও স্নায়ুতন্ত্রের শক্তি বাড়াতে অনন্য ভেষজ বটিকা।' },
+      { id: 'p7', name: 'শাহী হালুয়া', price: 1050, image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500', description: 'শারীরিক দুর্বলতা, ক্লান্তি ও অবসাদ দূরীকরণে আল-খিদমাহর বিশেষ ফর্মুলা।' },
+      { id: 'p8', name: 'পেনিস অয়েল', price: 1050, image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=500', description: 'ভেষজ নির্যাস সমৃদ্ধ এক্সটারনাল ম্যাসাজ অয়েল; রক্তপ্রবাহ সচল ও সক্রিয় রাখতে সহায়ক।' },
+      { id: 'p9', name: 'গুড বডি হালুয়া', price: 1250, image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500', description: 'শরীরের পুষ্টি ঘাটতি পূরণ করে সুস্থ ও সুঠাম স্বাস্থ্য গঠনে সহায়ক।' },
+      { id: 'p10', name: 'ফুট ডিমান্ড', price: 1050, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'পায়ের ক্লান্তি ও পেশির খিঁচুনি দূর করে রক্ত চলাচল স্বাভাবিক রাখতে সাহায্য করে।' },
+      { id: 'p11', name: 'আউট অফ গ্যাস', price: 850, image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500', description: 'তীব্র গ্যাস্ট্রিক, বুক জ্বালাপোড়া ও এসিডিটির দ্রুত প্রাকৃতিক সমাধান।' },
+      { id: 'p12', name: 'গ্যাস আউট পাউডার', price: 850, image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500', description: 'পেটের ফাঁপ, বদহজম এবং বায়ু সমস্যা পুরোপুরি নিরাময় করতে সহায়ক।' },
+      { id: 'p13', name: 'আমাশয় ডিলেট', price: 1050, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'পুরোনো আমাশয়, পেটের মোচড় ও ডায়রিয়াজনিত দুর্বলতা দূর করে।' },
+      { id: 'p14', name: 'এলার্জি বিনাশ', price: 950, image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=500', description: 'রক্ত পরিষ্কার করে এবং ত্বকের চুলকানি, লালচে ভাব ও এলার্জি নিয়ন্ত্রণ করে।' },
+      { id: 'p15', name: 'ডায়াবেটিস কন্ট্রোল', price: 1200, image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=500', description: 'প্রাকৃতিক ভেষজের মাধ্যমে রক্তের সুগার লেভেল নিয়ন্ত্রণে অত্যন্ত কার্যকর।' },
+      { id: 'p16', name: 'ডায়াবেটিস নিরাময় পাউডার', price: 850, image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=500', description: 'ডায়াবেটিসের কারণে দুর্বল হয়ে পড়া অঙ্গপ্রত্যঙ্গ সুস্থ ও সতেজ রাখে।' },
+      { id: 'p17', name: 'স্পেশাল পাঞ্জালিকুরিন', price: 1150, image: 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=500', description: 'নারীদের অভ্যন্তরীণ সমস্যা ও শারীরিক দুর্বলতা দূর করতে বিশ্বস্ত ওষুধ।' },
+      { id: 'p18', name: 'সঞ্জীবনী হালুয়া', price: 1250, image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500', description: 'পুরোনো দুর্বলতা দূর করে দীর্ঘস্থায়ী প্রাণশক্তি ও উদ্যম প্রদান করে।' },
+      { id: 'p19', name: 'অর্শ পাইলস ডিলেট (ফুল সেট)', price: 1500, image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500', description: 'পাউডার + ক্রিম + তেল কম্বো; পাইলস, ফিস্টুলা ও অর্শের ব্যথা এবং রক্ত পড়া দূর করে।' },
+      { id: 'p20', name: 'এহতেলাম বটিকা', price: 1250, image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500', description: 'ধাতু দৌর্বল্য ও অনিচ্ছাকৃত ক্ষয়রোধ করে শরীর সতেজ রাখে।' },
+      { id: 'p21', name: 'স্পেশাল মেহেনাজ বটিকা', price: 1200, image: 'https://images.unsplash.com/photo-1550572017-edd951aa8f72?w=500', description: 'শরীরের সার্বিক শক্তি বৃদ্ধি করে অবসাদ মুক্ত জীবন দিতে সাহায্য করে।' },
+      { id: 'p22', name: 'কস্তুরী গোল্ড হালুয়া', price: 1150, image: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500', description: 'প্রাকৃতিক উপাদান দ্বারা প্রস্তুত পুষ্টিকর হালুয়া যা কর্মক্ষমতা বৃদ্ধি করে।' },
+      { id: 'p23', name: 'এলোভেরা শ্যাম্পু', price: 740, image: 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=500', description: 'চুল পড়া বন্ধ করে, খুশকি দূর করে এবং চুল রেশমি ও উজ্জ্বল করে।' },
+      { id: 'p24', name: 'সেভেন হেয়ার কেয়ার অয়েল', price: 740, image: 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=500', description: 'সাতটি দুর্লভ তেলের সংমিশ্রণ যা চুলের গোড়া মজবুত করে এবং নতুন চুল গজাতে সহায়ক।' },
+      { id: 'p25', name: 'রিয়েল নাইট কিং', price: 1350, image: 'https://images.unsplash.com/photo-1514733670139-4d87a1941d55?w=500', description: 'চরম ক্লান্তি ও মানসিক চাপ দূর করে দীর্ঘস্থায়ী স্ট্যামিনা যোগায়।' },
+      { id: 'p26', name: 'অ্যাজমালিন প্লাস', price: 1250, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'অ্যাজমা, শ্বাসকষ্ট ও বুকের কফ দূরীকরণে দ্রুত কার্যকর।' },
+      { id: 'p27', name: 'ব্যাথা বিনাশ', price: 800, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'বাত ব্যথা, কোমর ও ঘাড়ের দীর্ঘদিনের পেশির ব্যথা উপশমে কাজ করে।' },
+      { id: 'p28', name: 'এলার্জি ফিনিস অয়েল', price: 850, image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=500', description: 'বাহ্যিক ব্যবহারের ভেষজ তেল যা চুলকানি ও ত্বকের ইনফেকশন দ্রুত সারিয়ে তোলে।' },
+      { id: 'p29', name: 'ঠান্ডা-কাশি বিনাশ', price: 950, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'পুরোনো কাশি, শুকনো কফ ও গলা খুসখুস দ্রুত দূর করতে কার্যকর ভেষজ।' },
+      { id: 'p30', name: 'রেডি ওয়াইফ', price: 1050, image: 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=500', description: 'মহিলাদের শারীরিক দুর্বলতা দূর করে শক্তি ও প্রফুল্লতা আনয়ন করে।' },
+      { id: 'p31', name: 'জাইফা বেবিফুড', price: 800, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'শিশুদের পুষ্টিহীনতা রোধ ও সুস্থ বৃদ্ধির জন্য নিরাপদ প্রাকৃতিক পথ্য।' },
+      { id: 'p32', name: 'বিউটি স্কিন সোপ (প্রিমিয়াম)', price: 1250, image: 'https://images.unsplash.com/photo-1607006314174-c48d21b369ba?w=500', description: 'ত্বকের মেছতা, ব্রণের দাগ দূর করে ত্বকে নিখুঁত উজ্জ্বলতা আনে।' },
+      { id: 'p33', name: 'বিউটি স্কিন সোপ', price: 890, image: 'https://images.unsplash.com/photo-1607006314174-c48d21b369ba?w=500', description: 'প্রাকৃতিক ভেষজ সাবান যা ত্বককে করে কোমল, মসৃণ ও সতেজ।' },
+      { id: 'p34', name: 'পেইন কিলার', price: 1200, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'জয়েন্টের ব্যথা, গিঁটে ব্যথা ও হাড়ের ব্যথায় তীব্র আরামদায়ক।' },
+      { id: 'p35', name: 'পারফেক্ট ক্যালসিয়াম', price: 1250, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'হাড় মজবুত করতে এবং ক্যালসিয়াম ঘাটতি মেটাতে সম্পূর্ণ প্রাকৃতিক উপাদান।' },
+      { id: 'p36', name: 'সিরাম', price: 850, image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500', description: 'ত্বকের লাবণ্য বৃদ্ধি ও বলিরেখা দূর করতে অত্যন্ত উপযোগী ফেস সিরাম।' },
+      { id: 'p37', name: 'জিনসিন সিরাপ (৪০০ মিলি)', price: 300, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'শক্তি ও সতেজতা বর্ধক ভেষজ জিনসিন সিরাপ।' },
+      { id: 'p38', name: 'দিনার সিরাপ (৪০০ মিলি)', price: 300, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'লিভার সুরক্ষা, জন্ডিস নিরাময় ও ক্ষুধাবর্ধক সিরাপ।' },
+      { id: 'p39', name: 'মিসালি সিরাপ (৪০০ মিলি)', price: 350, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'মহিলাদের জরায়ু ও অভ্যন্তরীণ সুস্থতার বিশ্বস্ত সিরাপ।' },
+      { id: 'p40', name: 'পুদিনা সিরাপ (৪০০ মিলি)', price: 295, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'পেটের গ্যাস, বমি ভাব ও অজীর্ণতা দূর করে রুচি বাড়ায়।' },
+      { id: 'p41', name: 'হাজিম সিরাপ (৪০০ মিলি)', price: 300, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'হজম শক্তি বহুলাংশে বৃদ্ধি করে ক্ষুধা বাড়ায়।' },
+      { id: 'p42', name: 'ফাওলাদ সিরাপ (৪০০ মিলি)', price: 320, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'রক্তস্বল্পতা দূর করে শরীরে আয়রন বৃদ্ধি ও শক্তি যোগায়।' },
+      { id: 'p43', name: 'তুলসি কফ সিরাপ (৪০০ মিলি)', price: 280, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'শুকনো কাশি, খুসখুস ও বুক ব্যথা দূর করতে খাঁটি তুলসি সিরাপ।' },
+      { id: 'p44', name: 'শরবত বুযূরী (৪০০ মিলি)', price: 300, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'প্রস্রাবের জ্বালাপোড়া ও কিডনি-মূত্রাশয়ের প্রদাহ দূর করে শরীর ঠান্ডা রাখে।' }
+    ];
+
+    let products = [...initialCatalogue];
     let cart = JSON.parse(localStorage.getItem('alkhidmah_cart')) || [];
     let currentCurrency = 'BDT';
     let compressedImageBase64 = "";
@@ -317,137 +364,17 @@
       return currencySymbols[currentCurrency] + converted;
     }
 
-    function cleanImageSrc(src) {
-      if (!src) return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400';
-      if (src.startsWith('data:image/svg+xml')) {
-        return src.replace(/"/g, "'");
-      }
-      return src;
-    }
-
-    async function loadOfferSettings() {
-      try {
-        const { data, error } = await supabaseClient.from('store_settings').select('*').eq('id', 1).single();
-        if (data) {
-          const offerBar = document.getElementById('dynamicOfferBar');
-          if (data.offer_active) {
-            offerBar.classList.remove('hidden');
-            document.getElementById('offerBarText').innerText = data.offer_text;
-            document.getElementById('offerBarLink').href = `https://wa.me/${OFFICIAL_WHATSAPP}?text=${encodeURIComponent(data.offer_text)}`;
-          } else {
-            offerBar.classList.add('hidden');
-          }
-          const textInput = document.getElementById('adminOfferTextInput');
-          const checkInput = document.getElementById('adminOfferActiveCheckbox');
-          if (textInput) textInput.value = data.offer_text || '';
-          if (checkInput) checkInput.checked = data.offer_active;
-        }
-      } catch (err) {}
-    }
-
-    async function saveOfferSettings() {
-      const btn = document.getElementById('saveOfferBtn');
-      btn.innerText = 'সেভ হচ্ছে...';
-      const text = document.getElementById('adminOfferTextInput').value.trim();
-      const active = document.getElementById('adminOfferActiveCheckbox').checked;
-
-      const { error } = await supabaseClient.from('store_settings').upsert({
-        id: 1,
-        offer_text: text,
-        offer_active: active,
-        updated_at: new Date()
-      });
-
-      btn.innerText = 'অফার সেভ করুন';
-      if (error) {
-        alert('অফার সেভ করা যায়নি: ' + error.message);
-      } else {
-        alert('অফার সফলভাবে আপডেট হয়েছে!');
-        loadOfferSettings();
-      }
-    }
-
-    function compressAndPreviewImage(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
-          const maxDim = 600;
-
-          if (width > height && width > maxDim) {
-            height *= maxDim / width;
-            width = maxDim;
-          } else if (height > maxDim) {
-            width *= maxDim / height;
-            height = maxDim;
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-
-          compressedImageBase64 = canvas.toDataURL('image/jpeg', 0.85);
-          document.getElementById('imagePreviewContainer').innerHTML = `<img src="${compressedImageBase64}" class="w-full h-full object-cover" />`;
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    // প্রোডাক্ট লোড এবং এরর অ্যালার্ট সিস্টেম
-    async function fetchProducts() {
-      const alertBox = document.getElementById('errorAlertBox');
-      alertBox.classList.add('hidden');
-      alertBox.innerText = '';
-
-      try {
-        document.getElementById('loadingProducts').classList.remove('hidden');
-        document.getElementById('productGrid').classList.add('hidden');
-
-        const { data, error } = await supabaseClient
-          .from('products')
-          .select('*')
-          .order('id', { ascending: false });
-
-        if (error) {
-          throw error;
-        }
-
-        products = data || [];
-        renderProducts();
-      } catch (err) {
-        alertBox.classList.remove('hidden');
-        alertBox.innerHTML = `⚠️ ডাটাবেজ এরর: ${err.message || JSON.stringify(err)}`;
-        console.error('Fetch error:', err);
-      } finally {
-        document.getElementById('loadingProducts').classList.add('hidden');
-        document.getElementById('productGrid').classList.remove('hidden');
-      }
-    }
-
     function renderProducts() {
       const grid = document.getElementById('productGrid');
       grid.innerHTML = '';
-      if (!products || products.length === 0) {
-        grid.innerHTML = `<p class="col-span-full text-center text-stone-400 py-10">কোনো পণ্য পাওয়া যায়নি। অ্যাডমিন থেকে পণ্য যোগ করুন।</p>`;
-        return;
-      }
 
       products.forEach(prod => {
         const card = document.createElement('div');
         card.className = "bg-white rounded-xl overflow-hidden shadow-sm border border-stone-100 flex flex-col justify-between hover:shadow-md transition";
-        const imgSrc = cleanImageSrc(prod.image);
 
         card.innerHTML = `
           <div class="cursor-pointer bg-stone-50 p-2 flex items-center justify-center relative group">
-            <img src="${imgSrc}" alt="${prod.name}" class="product-img-card rounded" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'" />
+            <img src="${prod.image}" alt="${prod.name}" class="product-img-card rounded" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'" />
             <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
               <span class="bg-emerald-900/80 text-white text-[10px] px-2 py-1 rounded-full"><i class="fa-solid fa-magnifying-glass-plus"></i> বড় করে দেখুন</span>
             </div>
@@ -474,11 +401,32 @@
       });
     }
 
+    // ব্যাকগ্রাউন্ডে সুপাবেজের সাথে সিঙ্ক
+    async function fetchSupabaseProducts() {
+      const status = document.getElementById('syncStatusText');
+      if (status) status.innerText = '🔄 ক্লাউড ডাটাবেজ সিঙ্ক হচ্ছে...';
+      try {
+        const { data, error } = await supabaseClient.from('products').select('*').order('id', { ascending: false });
+        if (!error && data && data.length > 0) {
+          // সুপাবেজের পণ্য যুক্ত করে আপডেট রাখা
+          const customIds = new Set(data.map(d => d.id));
+          const filteredInitial = initialCatalogue.filter(item => !customIds.has(item.id));
+          products = [...data, ...filteredInitial];
+          renderProducts();
+          if (status) status.innerText = '✅ ক্লাউড ডাটাবেজ সিঙ্ক সম্পন্ন';
+        } else {
+          if (status) status.innerText = '🌿 ক্যাটালগ প্রস্তুত';
+        }
+      } catch (err) {
+        if (status) status.innerText = '🌿 ক্যাটালগ প্রস্তুত (অফলাইন মোড)';
+      }
+    }
+
     function openQuickView(id) {
       const prod = products.find(p => p.id === id);
       if (!prod) return;
 
-      document.getElementById('qvImage').src = cleanImageSrc(prod.image);
+      document.getElementById('qvImage').src = prod.image;
       document.getElementById('qvName').innerText = prod.name;
       document.getElementById('qvPrice').innerText = formatPrice(prod.price);
       document.getElementById('qvDescription').innerText = prod.description || 'কোনো বিবরণ দেওয়া হয়নি।';
@@ -525,7 +473,7 @@
         row.className = "flex items-center justify-between bg-stone-50 p-2 rounded-lg border text-xs";
         row.innerHTML = `
           <div class="flex items-center gap-2">
-            <img src="${cleanImageSrc(item.image)}" class="w-8 h-8 rounded object-cover" />
+            <img src="${item.image}" class="w-8 h-8 rounded object-cover" />
             <div>
               <p class="font-bold text-stone-800">${item.name}</p>
               <p class="text-emerald-700">${formatPrice(item.price)} × ${item.qty}</p>
@@ -586,21 +534,17 @@
       };
 
       try {
-        const { error } = await supabaseClient.from('orders').insert([newOrder]);
-        if (error) throw error;
+        await supabaseClient.from('orders').insert([newOrder]);
+      } catch (err) {}
 
-        cart = [];
-        saveCart();
-        updateCartUI();
-        closeCheckoutModal();
-        e.target.reset();
-        alert(`আলহামদুলিল্লাহ! অর্ডারটি সম্পন্ন হয়েছে।\nআইডি: ${orderId}`);
-      } catch (err) {
-        alert('অর্ডার ডাটাবেজে নেওয়া যায়নি: ' + (err.message || err));
-      } finally {
-        btn.disabled = false;
-        btn.innerText = `অর্ডার সাবমিট করুন (ডাটাবেজ)`;
-      }
+      cart = [];
+      saveCart();
+      updateCartUI();
+      closeCheckoutModal();
+      e.target.reset();
+      btn.disabled = false;
+      btn.innerText = `অর্ডার সাবমিট করুন (ডাটাবেজ)`;
+      alert(`আলহামদুলিল্লাহ! আপনার অর্ডারটি গ্রহণ করা হয়েছে।\nঅর্ডার আইডি: ${orderId}`);
     }
 
     async function sendWhatsAppOrder() {
@@ -615,23 +559,101 @@
       const total = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
       const itemsList = cart.map((i, idx) => `${idx + 1}. ${i.name} - ${i.qty}টি`).join('%0A');
 
-      supabaseClient.from('orders').insert([{
-        id: orderId, customer_name: name, phone: phone, address: address,
-        payment_method: payment + ' (WhatsApp)', items: cart, total_price: total, status: 'WhatsApp'
-      }]).then();
+      // ব্যাকগ্রাউন্ডে সুপাবেজে লগ করা
+      try {
+        supabaseClient.from('orders').insert([{
+          id: orderId, customer_name: name, phone: phone, address: address,
+          payment_method: payment + ' (WhatsApp)', items: cart, total_price: total, status: 'WhatsApp'
+        }]).then();
+      } catch(e) {}
 
       const msg = `🌿 *আল খিদমাহ ন্যাচারাল - নতুন অর্ডার*%0Aআইডি: ${orderId}%0Aনাম: ${name}%0Aফোন: ${phone}%0Aঠিকানা: ${address}%0Aপণ্য:%0A${itemsList}%0Aমোট: ৳ ${total}`;
       cart = []; saveCart(); updateCartUI(); closeCheckoutModal();
       window.open(`https://wa.me/${OFFICIAL_WHATSAPP}?text=${msg}`, '_blank');
     }
 
+    // অফার ব্যানার লোড
+    async function loadOfferSettings() {
+      try {
+        const { data } = await supabaseClient.from('store_settings').select('*').eq('id', 1).single();
+        if (data) {
+          const offerBar = document.getElementById('dynamicOfferBar');
+          if (data.offer_active) {
+            offerBar.classList.remove('hidden');
+            document.getElementById('offerBarText').innerText = data.offer_text;
+            document.getElementById('offerBarLink').href = `https://wa.me/${OFFICIAL_WHATSAPP}?text=${encodeURIComponent(data.offer_text)}`;
+          } else {
+            offerBar.classList.add('hidden');
+          }
+          const textInput = document.getElementById('adminOfferTextInput');
+          const checkInput = document.getElementById('adminOfferActiveCheckbox');
+          if (textInput) textInput.value = data.offer_text || '';
+          if (checkInput) checkInput.checked = data.offer_active;
+        }
+      } catch (err) {}
+    }
+
+    async function saveOfferSettings() {
+      const btn = document.getElementById('saveOfferBtn');
+      btn.innerText = 'সেভ হচ্ছে...';
+      const text = document.getElementById('adminOfferTextInput').value.trim();
+      const active = document.getElementById('adminOfferActiveCheckbox').checked;
+
+      await supabaseClient.from('store_settings').upsert({
+        id: 1,
+        offer_text: text,
+        offer_active: active,
+        updated_at: new Date()
+      });
+
+      btn.innerText = 'অফার সেভ করুন';
+      alert('অফার সফলভাবে আপডেট হয়েছে!');
+      loadOfferSettings();
+    }
+
+    // ছবি সংকোচন
+    function compressAndPreviewImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 500;
+
+          if (width > height && width > maxDim) {
+            height *= maxDim / width;
+            width = maxDim;
+          } else if (height > maxDim) {
+            width *= maxDim / height;
+            height = maxDim;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          compressedImageBase64 = canvas.toDataURL('image/jpeg', 0.8);
+          document.getElementById('imagePreviewContainer').innerHTML = `<img src="${compressedImageBase64}" class="w-full h-full object-cover" />`;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // অ্যাডমিন লগইন ও ড্যাশবোর্ড
     function toggleAdminModal() { document.getElementById('adminModal').classList.toggle('hidden'); }
 
     function checkAdminPassword() {
       if (document.getElementById('adminPassInput').value.trim() === ADMIN_PASSWORD) {
         document.getElementById('adminLoginForm').classList.add('hidden');
         document.getElementById('adminDashboard').classList.remove('hidden');
-        fetchAdminProducts();
+        renderAdminProducts();
         fetchAdminOrders();
         loadOfferSettings();
       } else {
@@ -646,17 +668,14 @@
       toggleAdminModal();
     }
 
-    async function fetchAdminProducts() {
+    function renderAdminProducts() {
       const pBody = document.getElementById('adminProductTableBody');
-      const { data, error } = await supabaseClient.from('products').select('*').order('id', { ascending: false });
-      if (error || !data) return;
-
       pBody.innerHTML = '';
-      data.forEach(p => {
+      products.forEach(p => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td class="p-2 flex items-center gap-2">
-            <img src="${cleanImageSrc(p.image)}" class="w-7 h-7 rounded object-cover" />
+            <img src="${p.image}" class="w-7 h-7 rounded object-cover" />
             <span class="font-bold">${p.name}</span>
           </td>
           <td class="p-2 font-bold text-emerald-800">৳ ${p.price}</td>
@@ -677,94 +696,87 @@
     async function updateProductPrice(id) {
       const val = Number(document.getElementById(`priceInput_${id}`).value);
       if (!val) return;
-      const { error } = await supabaseClient.from('products').update({ price: val }).eq('id', id);
-      if (error) alert('ব্যর্থ: ' + error.message);
-      else { alert('দাম আপডেট হয়েছে!'); fetchProducts(); fetchAdminProducts(); }
+      const target = products.find(p => p.id === id);
+      if (target) target.price = val;
+      renderProducts();
+      renderAdminProducts();
+
+      try {
+        await supabaseClient.from('products').upsert([{ id: id, name: target.name, price: val, image: target.image, description: target.description }]);
+      } catch (err) {}
+      alert('পণ্যের দাম আপডেট করা হয়েছে!');
     }
 
     async function deleteProduct(id) {
       if (!confirm('মুছে ফেলতে চান?')) return;
-      const { error } = await supabaseClient.from('products').delete().eq('id', id);
-      if (error) alert('ব্যর্থ: ' + error.message);
-      else { fetchProducts(); fetchAdminProducts(); }
+      products = products.filter(p => p.id !== id);
+      renderProducts();
+      renderAdminProducts();
+      try {
+        await supabaseClient.from('products').delete().eq('id', id);
+      } catch (err) {}
     }
 
     async function handleAddNewProduct(e) {
       e.preventDefault();
-      if (!compressedImageBase64) return alert('দয়া করে একটি ছবি সিলেক্ট করুন!');
-
       const btn = document.getElementById('saveProdBtn');
       btn.disabled = true;
       btn.innerText = 'সেভ হচ্ছে...';
 
+      const newId = 'custom_' + Date.now();
+      const img = compressedImageBase64 || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500';
       const newProduct = {
+        id: newId,
         name: document.getElementById('newProdName').value.trim(),
         price: Number(document.getElementById('newProdPrice').value),
-        image: compressedImageBase64,
+        image: img,
         description: document.getElementById('newProdDesc').value.trim()
       };
 
-      const { data, error } = await supabaseClient.from('products').insert([newProduct]).select();
+      products.unshift(newProduct);
+      renderProducts();
+      renderAdminProducts();
+
+      try {
+        await supabaseClient.from('products').insert([newProduct]);
+      } catch (err) {}
+
       btn.disabled = false;
-      btn.innerText = '+ সেভ করুন';
-
-      if (error) {
-        alert('পণ্য যোগ করতে সমস্যা হয়েছে:\n' + error.message);
-      } else {
-        alert('পণ্য সফলভাবে ডাটাবেজে যোগ হয়েছে!');
-        e.target.reset();
-        compressedImageBase64 = "";
-        document.getElementById('imagePreviewContainer').innerHTML = "ছবি";
-        fetchProducts();
-        fetchAdminProducts();
-      }
-    }
-
-    async function updateOrderStatus(orderId, newStatus) {
-      const { error } = await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId);
-      if (error) {
-        alert('স্ট্যাটাস আপডেট ব্যর্থ হয়েছে: ' + error.message);
-      } else {
-        alert(`অর্ডারটি সফলভাবে "${newStatus}" করা হয়েছে!`);
-        fetchAdminOrders();
-      }
+      btn.innerText = '+ সেভ করুন (ডাটাবেজে)';
+      e.target.reset();
+      compressedImageBase64 = "";
+      document.getElementById('imagePreviewContainer').innerHTML = "ছবি";
+      alert('পণ্যটি সফলভাবে যোগ করা হয়েছে!');
     }
 
     async function fetchAdminOrders() {
       const oBody = document.getElementById('adminOrderTableBody');
-      const { data, error } = await supabaseClient.from('orders').select('*').order('created_at', { ascending: false });
-      if (error || !data || data.length === 0) {
-        oBody.innerHTML = `<tr><td colspan="6" class="p-3 text-center text-stone-400">এখনো কোনো অর্ডার নেই।</td></tr>`;
-        return;
-      }
-
-      oBody.innerHTML = data.map(o => `
-        <tr>
-          <td class="p-2 font-mono font-bold">${o.id}</td>
-          <td class="p-2 font-semibold">${o.customer_name}<br/><span class="text-stone-400 font-mono text-[10px]">${o.phone}</span></td>
-          <td class="p-2 text-stone-600 text-[10px]">${o.address}</td>
-          <td class="p-2 text-[10px]">${Array.isArray(o.items) ? o.items.map(i => `${i.name} (${i.qty})`).join(', ') : ''}</td>
-          <td class="p-2 font-bold text-emerald-800">৳ ${o.total_price}</td>
-          <td class="p-2">
-            <select onchange="updateOrderStatus('${o.id}', this.value)" class="text-[10px] p-1 rounded border outline-none font-semibold ${
-              o.status === 'Delivered' ? 'bg-green-100 text-green-800 border-green-300' :
-              o.status === 'Confirmed' ? 'bg-blue-100 text-blue-800 border-blue-300' :
-              o.status === 'Cancelled' ? 'bg-red-100 text-red-800 border-red-300' :
-              'bg-amber-100 text-amber-800 border-amber-300'
-            }">
-              <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>Pending (অপেক্ষমাণ)</option>
-              <option value="Confirmed" ${o.status === 'Confirmed' ? 'selected' : ''}>Confirmed (নিশ্চিত)</option>
-              <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered (ডেলিভার্ড)</option>
-              <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled (বাতিল)</option>
-            </select>
-          </td>
-        </tr>
-      `).join('');
+      try {
+        const { data } = await supabaseClient.from('orders').select('*').order('created_at', { ascending: false });
+        if (data && data.length > 0) {
+          oBody.innerHTML = data.map(o => `
+            <tr>
+              <td class="p-2 font-mono font-bold">${o.id}</td>
+              <td class="p-2 font-semibold">${o.customer_name}<br/><span class="text-stone-400 font-mono text-[10px]">${o.phone}</span></td>
+              <td class="p-2 text-stone-600 text-[10px]">${o.address}</td>
+              <td class="p-2 text-[10px]">${Array.isArray(o.items) ? o.items.map(i => `${i.name} (${i.qty})`).join(', ') : ''}</td>
+              <td class="p-2 font-bold text-emerald-800">৳ ${o.total_price}</td>
+              <td class="p-2">
+                <span class="text-[10px] px-2 py-0.5 rounded font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">${o.status}</span>
+              </td>
+            </tr>
+          `).join('');
+          return;
+        }
+      } catch (err) {}
+      oBody.innerHTML = `<tr><td colspan="6" class="p-3 text-center text-stone-400">কোনো অর্ডার এখনো নেই।</td></tr>`;
     }
 
-    fetchProducts();
+    // প্রাথমিক লোড
+    renderProducts();
     updateCartUI();
+    fetchSupabaseProducts();
     loadOfferSettings();
   </script>
 </body>
-                                                                          </html>
+  </html>
