@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -75,7 +76,7 @@
         <h3 class="text-lg font-bold text-stone-800 border-l-4 border-emerald-600 pl-3">আমাদের পণ্যসমূহ ও ভেষজ ঔষধ</h3>
         <p class="text-xs text-stone-500 pl-3 mt-0.5" id="syncStatusText">🌿 অফিশিয়াল ক্যাটালগ প্রস্তুত</p>
       </div>
-      <button onclick="fetchSupabaseProducts()" class="text-xs text-emerald-700 hover:underline flex items-center gap-1"><i class="fa-solid fa-arrows-rotate"></i> সিঙ্ক করুন</button>
+      <button onclick="renderProducts()" class="text-xs text-emerald-700 hover:underline flex items-center gap-1"><i class="fa-solid fa-arrows-rotate"></i> রিফ্রেশ করুন</button>
     </div>
 
     <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
@@ -297,48 +298,47 @@
     const ADMIN_PASSWORD = "909499";
     const OFFICIAL_WHATSAPP = "8801971909499";
 
-    // আপনার দেওয়া অফিশিয়াল ছবি ও সঠিক দাম সম্বলিত ক্যাটালগ
-    const initialCatalogue = [
-      { id: 'p1', name: 'পাওয়ার গোল্ড হালুয়া', price: 900, image: 'https://images.unsplash.com/photo-1577069808021-5a67645e7512?w=500', description: 'বিশেষ পুষ্টিকর প্রাকৃতিক ফর্মুলা; শরীরের রোগ প্রতিরোধ ক্ষমতা ও জীবনীশক্তি দ্বিগুণ করে।' },
-      { id: 'p2', name: 'নুসরাত পাউডার', price: 800, image: 'https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=500', description: 'হজমশক্তি বৃদ্ধি, পেটের গ্যাস ও বদহজম দূর করে সার্বিক সুস্থতা প্রদান করে।' },
-      { id: 'p3', name: 'মিসাইল বিট', price: 750, image: 'https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=500', description: 'স্নায়বিক দুর্বলতা হ্রাস করে, দ্রুত ক্লান্তি দূর করে শরীর চাঙ্গা রাখে।' },
-      { id: 'p4', name: 'বিগ পেনিস 3XL', price: 750, image: 'https://images.unsplash.com/photo-1608248597359-5489f64d7285?w=500', description: 'পুরুষদের বিশেষ মালিশ ফর্মুলা যা স্থানীয় রক্ত সঞ্চালন বৃদ্ধি করে সতেজতা বাড়ায়।' },
-      { id: 'p5', name: 'জিনসিন পাউডার', price: 700, image: 'https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=500', description: 'খাঁটি লাল জিনসিন; শক্তি ও কার্যক্ষমতা বৃদ্ধির জন্য একটি নির্ভরযোগ্য প্রাকৃতিক উপাদান।' },
-      { id: 'p6', name: 'পেনিস অয়েল', price: 700, image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=500', description: 'ভেষজ নির্যাস সমৃদ্ধ এক্সটারনাল ম্যাসাজ অয়েল; রক্তপ্রবাহ সচল ও সক্রিয় রাখতে সহায়ক।' },
-      { id: 'p7', name: 'শাহী হালুয়া', price: 700, image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500', description: 'শারীরিক দুর্বলতা, ক্লান্তি ও অবসাদ দূরীকরণে আল-খিদমাহর বিশেষ ফর্মুলা।' },
-      { id: 'p8', name: 'রিয়েল রাজমণি বটিকা', price: 750, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'শারীরিক অবসাদ দূর করে ও স্নায়ুতন্ত্রের শক্তি বাড়াতে অনন্য ভেষজ বটিকা।' },
-      { id: 'p9', name: 'গুড বডি হালুয়া', price: 700, image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500', description: 'শরীরের পুষ্টি ঘাটতি পূরণ করে সুস্থ ও সুঠাম স্বাস্থ্য গঠনে সহায়ক।' },
-      { id: 'p10', name: 'ফুট ডিমান্ড', price: 700, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'পায়ের ক্লান্তি ও পেশির খিঁচুনি দূর করে রক্ত চলাচল স্বাভাবিক রাখতে সাহায্য করে।' },
-      { id: 'p11', name: 'আউট অফ গ্যাস', price: 600, image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500', description: 'তীব্র গ্যাস্ট্রিক, বুক জ্বালাপোড়া ও এসিডিটির দ্রুত প্রাকৃতিক সমাধান।' },
-      { id: 'p12', name: 'আমাশয় ডিলেট', price: 700, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'পুরোনো আমাশয়, পেটের মোচড় ও ডায়রিয়াজনিত দুর্বলতা দূর করে।' },
-      { id: 'p13', name: 'এলার্জি বিনাশ', price: 600, image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=500', description: 'রক্ত পরিষ্কার করে এবং ত্বকের চুলকানি, লালচে ভাব ও এলার্জি নিয়ন্ত্রণ করে।' },
-      { id: 'p14', name: 'স্পেশাল পাঞ্জালিকুরিন', price: 700, image: 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=500', description: 'নারীদের অভ্যন্তরীণ সমস্যা ও শারীরিক দুর্বলতা দূর করতে বিশ্বস্ত ওষুধ।' },
-      { id: 'p15', name: 'ডায়াবেটিস নিরাময় পাউডার', price: 650, image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=500', description: 'ডায়াবেটিসের কারণে দুর্বল হয়ে পড়া অঙ্গপ্রত্যঙ্গ সুস্থ ও সতেজ রাখে।' },
-      { id: 'p16', name: 'ডায়াবেটিস কন্ট্রোল', price: 650, image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=500', description: 'প্রাকৃতিক ভেষজের মাধ্যমে রক্তের সুগার লেভেল নিয়ন্ত্রণে অত্যন্ত কার্যকর।' },
-      { id: 'p17', name: 'সঞ্জীবনী হালুয়া', price: 800, image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500', description: 'পুরোনো দুর্বলতা দূর করে দীর্ঘস্থায়ী প্রাণশক্তি ও উদ্যম প্রদান করে।' },
-      { id: 'p18', name: 'অর্শ পাইলস ডিলেট', price: 1400, image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500', description: 'পাইলস, ফিস্টুলা ও অর্শের ব্যথা, রক্ত পড়া ও মাংস বৃদ্ধি সারাতে সম্পূর্ণ কম্বো।' },
-      { id: 'p19', name: 'এহতেলাম বটিকা', price: 750, image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500', description: 'ধাতু দৌর্বল্য ও অনিচ্ছাকৃত ক্ষয়রোধ করে শরীর সতেজ রাখে।' },
-      { id: 'p20', name: 'এলোভেরা শ্যাম্পু', price: 350, image: 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=500', description: 'চুল পড়া বন্ধ করে, খুশকি দূর করে এবং চুল রেশমি ও উজ্জ্বল করে।' },
-      { id: 'p21', name: 'কস্তুরী গোল্ড হালুয়া', price: 700, image: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500', description: 'প্রাকৃতিক উপাদান দ্বারা প্রস্তুত পুষ্টিকর হালুয়া যা কর্মক্ষমতা বৃদ্ধি করে।' },
-      { id: 'p22', name: 'স্পেশাল মেহেনাজ বটিকা', price: 700, image: 'https://images.unsplash.com/photo-1550572017-edd951aa8f72?w=500', description: 'শরীরের সার্বিক শক্তি বৃদ্ধি করে অবসাদ মুক্ত জীবন দিতে সাহায্য করে।' },
-      { id: 'p23', name: 'অ্যাজমালিন প্লাস', price: 750, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'অ্যাজমা, শ্বাসকষ্ট ও বুকের কফ দূরীকরণে দ্রুত কার্যকর।' },
-      { id: 'p24', name: 'রিয়েল নাইট কিং', price: 1000, image: 'https://images.unsplash.com/photo-1514733670139-4d87a1941d55?w=500', description: 'চরম ক্লান্তি ও মানসিক চাপ দূর করে দীর্ঘস্থায়ী স্ট্যামিনা যোগায়।' },
-      { id: 'p25', name: 'সেভেন হেয়ার কেয়ার অয়েল', price: 400, image: 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=500', description: 'সাতটি দুর্লভ তেলের সংমিশ্রণ যা চুলের গোড়া মজবুত করে এবং নতুন চুল গজাতে সহায়ক।' },
-      { id: 'p26', name: 'ঠান্ডা-কাশি বিনাশ', price: 600, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'পুরোনো কাশি, শুকনো কফ ও গলা খুসখুস দ্রুত দূর করতে কার্যকর ভেষজ।' },
-      { id: 'p27', name: 'এলার্জি ফিনিস অয়েল', price: 600, image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=500', description: 'বাহ্যিক ব্যবহারের ভেষজ তেল যা চুলকানি ও ত্বকের ইনফেকশন দ্রুত সারিয়ে তোলে।' },
-      { id: 'p28', name: 'ব্যাথা বিনাশ', price: 500, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'বাত ব্যথা, কোমর ও ঘাড়ের দীর্ঘদিনের পেশির ব্যথা উপশমে কাজ করে।' },
-      { id: 'p29', name: 'বিউটি স্কিন সোপ (প্রিমিয়াম)', price: 1200, image: 'https://images.unsplash.com/photo-1607006314174-c48d21b369ba?w=500', description: 'ত্বকের মেছতা, ব্রণের দাগ দূর করে ত্বকে নিখুঁত উজ্জ্বলতা আনে।' },
-      { id: 'p30', name: 'জাইফা বেবিফুড', price: 700, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'শিশুদের পুষ্টিহীনতা রোধ ও সুস্থ বৃদ্ধির জন্য নিরাপদ প্রাকৃতিক পথ্য।' },
-      { id: 'p31', name: 'রেডি ওয়াইফ', price: 700, image: 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=500', description: 'মহিলাদের শারীরিক দুর্বলতা দূর করে শক্তি ও প্রফুল্লতা আনয়ন করে।' },
-      { id: 'p32', name: 'পারফেক্ট ক্যালসিয়াম', price: 900, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'হাড় মজবুত করতে এবং ক্যালসিয়াম ঘাটতি মেটাতে সম্পূর্ণ প্রাকৃতিক উপাদান।' },
-      { id: 'p33', name: 'পেইন কিলার', price: 800, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'জয়েন্টের ব্যথা, গিঁটে ব্যথা ও হাড়ের ব্যথায় তীব্র আরামদায়ক।' },
-      { id: 'p34', name: 'বিউটি স্কিন সোপ', price: 800, image: 'https://images.unsplash.com/photo-1607006314174-c48d21b369ba?w=500', description: 'প্রাকৃতিক ভেষজ সাবান যা ত্বককে করে কোমল, মসৃণ ও সতেজ।' },
-      { id: 'p35', name: 'মিসালি সিরাপ (৪০০ মিলি)', price: 350, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'মহিলাদের জরায়ু ও অভ্যন্তরীণ সুস্থতার বিশ্বস্ত সিরাপ।' },
-      { id: 'p36', name: 'দিনার সিরাপ (৪০০ মিলি)', price: 300, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'লিভার সুরক্ষা, জন্ডিস নিরাময় ও ক্ষুধাবর্ধক সিরাপ।' },
-      { id: 'p37', name: 'জিনসিন সিরাপ (৪০০ মিলি)', price: 300, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'শক্তি ও সতেজতা বর্ধক ভেষজ জিনসিন সিরাপ।' }
+    // আপনার দেওয়া আসল ও অফিশিয়াল ছবি সম্বলিত সম্পূর্ণ তালিকা
+    let products = [
+      { id: '1', name: 'পাওয়ার গোল্ড হালুয়া', price: 900, image: 'https://images.unsplash.com/photo-1577069808021-5a67645e7512?w=500', description: 'বিশেষ পুষ্টিকর প্রাকৃতিক ফর্মুলা; শরীরের রোগ প্রতিরোধ ক্ষমতা ও জীবনীশক্তি দ্বিগুণ করে।' },
+      { id: '2', name: 'নুসরাত পাউডার', price: 800, image: 'https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=500', description: 'হজমশক্তি বৃদ্ধি, পেটের গ্যাস ও বদহজম দূর করে সার্বিক সুস্থতা প্রদান করে।' },
+      { id: '3', name: 'মিসাইল বিট', price: 750, image: 'https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=500', description: 'স্নায়বিক দুর্বলতা হ্রাস করে, দ্রুত ক্লান্তি দূর করে শরীর চাঙ্গা রাখে।' },
+      { id: '4', name: 'বিগ পেনিস 3XL', price: 750, image: 'https://images.unsplash.com/photo-1608248597359-5489f64d7285?w=500', description: 'পুরুষদের বিশেষ মালিশ ফর্মুলা যা স্থানীয় রক্ত সঞ্চালন বৃদ্ধি করে সতেজতা বাড়ায়।' },
+      { id: '5', name: 'জিনসিন পাউডার', price: 700, image: 'https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=500', description: 'খাঁটি লাল জিনসিন; শক্তি ও কার্যক্ষমতা বৃদ্ধির জন্য একটি নির্ভরযোগ্য প্রাকৃতিক উপাদান।' },
+      { id: '6', name: 'পেনিস অয়েল', price: 700, image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=500', description: 'ভেষজ নির্যাস সমৃদ্ধ এক্সটারনাল ম্যাসাজ অয়েল; রক্তপ্রবাহ সচল ও সক্রিয় রাখতে সহায়ক।' },
+      { id: '7', name: 'শাহী হালুয়া', price: 700, image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500', description: 'শারীরিক দুর্বলতা, ক্লান্তি ও অবসাদ দূরীকরণে আল-খিদমাহর বিশেষ ফর্মুলা।' },
+      { id: '8', name: 'রিয়েল রাজমণি বটিকা', price: 750, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'শারীরিক অবসাদ দূর করে ও স্নায়ুতন্ত্রের শক্তি বাড়াতে অনন্য ভেষজ বটিকা।' },
+      { id: '9', name: 'গুড বডি হালুয়া', price: 700, image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500', description: 'শরীরের পুষ্টি ঘাটতি পূরণ করে সুস্থ ও সুঠাম স্বাস্থ্য গঠনে সহায়ক।' },
+      { id: '10', name: 'ফুট ডিমান্ড', price: 700, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'পায়ের ক্লান্তি ও পেশির খিঁচুনি দূর করে রক্ত চলাচল স্বাভাবিক রাখতে সাহায্য করে।' },
+      { id: '11', name: 'আউট অফ গ্যাস', price: 600, image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500', description: 'তীব্র গ্যাস্ট্রিক, বুক জ্বালাপোড়া ও এসিডিটির দ্রুত প্রাকৃতিক সমাধান।' },
+      { id: '12', name: 'আমাশয় ডিলেট', price: 700, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'পুরোনো আমাশয়, পেটের মোচড় ও ডায়রিয়াজনিত দুর্বলতা দূর করে।' },
+      { id: '13', name: 'এলার্জি বিনাশ', price: 600, image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=500', description: 'রক্ত পরিষ্কার করে এবং ত্বকের চুলকানি, লালচে ভাব ও এলার্জি নিয়ন্ত্রণ করে।' },
+      { id: '14', name: 'স্পেশাল পাঞ্জালিকুরিন', price: 700, image: 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=500', description: 'নারীদের অভ্যন্তরীণ সমস্যা ও শারীরিক দুর্বলতা দূর করতে বিশ্বস্ত ওষুধ।' },
+      { id: '15', name: 'ডায়াবেটিস নিরাময় পাউডার', price: 650, image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=500', description: 'ডায়াবেটিসের কারণে দুর্বল হয়ে পড়া অঙ্গপ্রত্যঙ্গ সুস্থ ও সতেজ রাখে।' },
+      { id: '16', name: 'ডায়াবেটিস কন্ট্রোল', price: 650, image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=500', description: 'প্রাকৃতিক ভেষজের মাধ্যমে রক্তের সুগার লেভেল নিয়ন্ত্রণে অত্যন্ত কার্যকর।' },
+      { id: '17', name: 'সঞ্জীবনী হালুয়া', price: 800, image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500', description: 'পুরোনো দুর্বলতা দূর করে দীর্ঘস্থায়ী প্রাণশক্তি ও উদ্যম প্রদান করে।' },
+      { id: '18', name: 'অর্শ পাইলস ডিলেট', price: 1400, image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500', description: 'পাইলস, ফিস্টুলা ও অর্শের ব্যথা, রক্ত পড়া ও মাংস বৃদ্ধি সারাতে সম্পূর্ণ কম্বো।' },
+      { id: '19', name: 'এহতেলাম বটিকা', price: 750, image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500', description: 'ধাতু দৌর্বল্য ও অনিচ্ছাকৃত ক্ষয়রোধ করে শরীর সতেজ রাখে।' },
+      { id: '20', name: 'এলোভেরা শ্যাম্পু', price: 350, image: 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=500', description: 'চুল পড়া বন্ধ করে, খুশকি দূর করে এবং চুল রেশমি ও উজ্জ্বল করে।' },
+      { id: '21', name: 'কস্তুরী গোল্ড হালুয়া', price: 700, image: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500', description: 'প্রাকৃতিক উপাদান দ্বারা প্রস্তুত পুষ্টিকর হালুয়া যা কর্মক্ষমতা বৃদ্ধি করে।' },
+      { id: '22', name: 'স্পেশাল মেহেনাজ বটিকা', price: 700, image: 'https://images.unsplash.com/photo-1550572017-edd951aa8f72?w=500', description: 'শরীরের সার্বিক শক্তি বৃদ্ধি করে অবসাদ মুক্ত জীবন দিতে সাহায্য করে।' },
+      { id: '23', name: 'অ্যাজমালিন প্লাস', price: 750, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'অ্যাজমা, শ্বাসকষ্ট ও বুকের কফ দূরীকরণে দ্রুত কার্যকর।' },
+      { id: '24', name: 'রিয়েল নাইট কিং', price: 1000, image: 'https://images.unsplash.com/photo-1514733670139-4d87a1941d55?w=500', description: 'চরম ক্লান্তি ও মানসিক চাপ দূর করে দীর্ঘস্থায়ী স্ট্যামিনা যোগায়।' },
+      { id: '25', name: 'সেভেন হেয়ার কেয়ার অয়েল', price: 400, image: 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=500', description: 'সাতটি দুর্লভ তেলের সংমিশ্রণ যা চুলের গোড়া মজবুত করে এবং নতুন চুল গজাতে সহায়ক।' },
+      { id: '26', name: 'ঠান্ডা-কাশি বিনাশ', price: 600, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'পুরোনো কাশি, শুকনো কফ ও গলা খুসখুস দ্রুত দূর করতে কার্যকর ভেষজ।' },
+      { id: '27', name: 'এলার্জি ফিনিস অয়েল', price: 600, image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=500', description: 'বাহ্যিক ব্যবহারের ভেষজ তেল যা চুলকানি ও ত্বকের ইনফেকশন দ্রুত সারিয়ে তোলে।' },
+      { id: '28', name: 'ব্যাথা বিনাশ', price: 500, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'বাত ব্যথা, কোমর ও ঘাড়ের দীর্ঘদিনের পেশির ব্যথা উপশমে কাজ করে।' },
+      { id: '29', name: 'বিউটি স্কিন সোপ (প্রিমিয়াম)', price: 1200, image: 'https://images.unsplash.com/photo-1607006314174-c48d21b369ba?w=500', description: 'ত্বকের মেছতা, ব্রণের দাগ দূর করে ত্বকে নিখুঁত উজ্জ্বলতা আনে।' },
+      { id: '30', name: 'জাইফা বেবিফুড', price: 700, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'শিশুদের পুষ্টিহীনতা রোধ ও সুস্থ বৃদ্ধির জন্য নিরাপদ প্রাকৃতিক পথ্য।' },
+      { id: '31', name: 'রেডি ওয়াইফ', price: 700, image: 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=500', description: 'মহিলাদের শারীরিক দুর্বলতা দূর করে শক্তি ও প্রফুল্লতা আনয়ন করে।' },
+      { id: '32', name: 'পারফেক্ট ক্যালসিয়াম', price: 900, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'হাড় মজবুত করতে এবং ক্যালসিয়াম ঘাটতি মেটাতে সম্পূর্ণ প্রাকৃতিক উপাদান।' },
+      { id: '33', name: 'পেইন কিলার', price: 800, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500', description: 'জয়েন্টের ব্যথা, গিঁটে ব্যথা ও হাড়ের ব্যথায় তীব্র আরামদায়ক।' },
+      { id: '34', name: 'বিউটি স্কিন সোপ', price: 800, image: 'https://images.unsplash.com/photo-1607006314174-c48d21b369ba?w=500', description: 'প্রাকৃতিক ভেষজ সাবান যা ত্বককে করে কোমল, মসৃণ ও সতেজ।' },
+      { id: '35', name: 'মিসালি সিরাপ (৪০০ মিলি)', price: 350, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'মহিলাদের জরায়ু ও অভ্যন্তরীণ সুস্থতার বিশ্বস্ত সিরাপ।' },
+      { id: '36', name: 'দিনার সিরাপ (৪০০ মিলি)', price: 300, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'লিভার সুরক্ষা, জন্ডিস নিরাময় ও ক্ষুধাবর্ধক সিরাপ।' },
+      { id: '37', name: 'জিনসিন সিরাপ (৪০০ মিলি)', price: 300, image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500', description: 'শক্তি ও সতেজতা বর্ধক ভেষজ জিনসিন সিরাপ।' }
     ];
 
-    let products = [...initialCatalogue];
     let cart = JSON.parse(localStorage.getItem('alkhidmah_cart')) || [];
     let currentCurrency = 'BDT';
     let compressedImageBase64 = "";
@@ -391,27 +391,8 @@
       });
     }
 
-    async function fetchSupabaseProducts() {
-      const status = document.getElementById('syncStatusText');
-      if (status) status.innerText = '🔄 সিঙ্ক হচ্ছে...';
-      try {
-        const { data, error } = await supabaseClient.from('products').select('*').order('id', { ascending: false });
-        if (!error && data && data.length > 0) {
-          const customIds = new Set(data.map(d => d.id));
-          const filteredInitial = initialCatalogue.filter(item => !customIds.has(item.id));
-          products = [...data, ...filteredInitial];
-          renderProducts();
-          if (status) status.innerText = '✅ সিঙ্ক সম্পন্ন';
-        } else {
-          if (status) status.innerText = '🌿 অফিশিয়াল ক্যাটালগ প্রস্তুত';
-        }
-      } catch (err) {
-        if (status) status.innerText = '🌿 ক্যাটালগ প্রস্তুত (অফলাইন মোড)';
-      }
-    }
-
     function openQuickView(id) {
-      const prod = products.find(p => p.id === id);
+      const prod = products.find(p => p.id == id);
       if (!prod) return;
 
       document.getElementById('qvImage').src = prod.image;
@@ -433,9 +414,9 @@
     }
 
     function addToCart(productId) {
-      const item = products.find(p => p.id === productId);
+      const item = products.find(p => p.id == productId);
       if (!item) return;
-      const exist = cart.find(c => c.id === productId);
+      const exist = cart.find(c => c.id == productId);
       if (exist) { exist.qty += 1; } else { cart.push({ id: item.id, name: item.name, price: item.price, image: item.image, qty: 1 }); }
       saveCart();
       updateCartUI();
@@ -477,7 +458,7 @@
     }
 
     function removeFromCart(id) {
-      cart = cart.filter(item => item.id !== id);
+      cart = cart.filter(item => item.id != id);
       saveCart();
       updateCartUI();
     }
@@ -677,36 +658,27 @@
       });
     }
 
-    async function updateProductPrice(id) {
+    function updateProductPrice(id) {
       const val = Number(document.getElementById(`priceInput_${id}`).value);
       if (!val) return;
-      const target = products.find(p => p.id === id);
+      const target = products.find(p => p.id == id);
       if (target) target.price = val;
       renderProducts();
       renderAdminProducts();
-
-      try {
-        await supabaseClient.from('products').upsert([{ id: id, name: target.name, price: val, image: target.image, description: target.description }]);
-      } catch (err) {}
       alert('দাম আপডেট করা হয়েছে!');
     }
 
-    async function deleteProduct(id) {
+    function deleteProduct(id) {
       if (!confirm('মুছে ফেলতে চান?')) return;
-      products = products.filter(p => p.id !== id);
+      products = products.filter(p => p.id != id);
       renderProducts();
       renderAdminProducts();
-      try {
-        await supabaseClient.from('products').delete().eq('id', id);
-      } catch (err) {}
     }
 
-    async function handleAddNewProduct(e) {
+    function handleAddNewProduct(e) {
       e.preventDefault();
       const btn = document.getElementById('saveProdBtn');
-      btn.disabled = true;
-      btn.innerText = 'সেভ হচ্ছে...';
-
+      
       const newId = 'custom_' + Date.now();
       const img = compressedImageBase64 || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500';
       const newProduct = {
@@ -721,12 +693,6 @@
       renderProducts();
       renderAdminProducts();
 
-      try {
-        await supabaseClient.from('products').insert([newProduct]);
-      } catch (err) {}
-
-      btn.disabled = false;
-      btn.innerText = '+ সেভ করুন';
       e.target.reset();
       compressedImageBase64 = "";
       document.getElementById('imagePreviewContainer').innerHTML = "ছবি";
@@ -771,8 +737,7 @@
 
     renderProducts();
     updateCartUI();
-    fetchSupabaseProducts();
     loadOfferSettings();
   </script>
 </body>
-        </html>
+  </html>
